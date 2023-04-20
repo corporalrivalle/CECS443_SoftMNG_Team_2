@@ -13,26 +13,58 @@ def reserve():
 
 
 
+def capacity(cap, lim):
+    if cap >= lim:
+        return 1
+    else:
+        return 0
+
 
 def main ():
 
 
-    lot = []
+    lot = [ [0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0]]
+    cap=0
+    limit = 16
     end = 4
+    onsite=False
+    online = False
     print ("Welcome to the Automated parking garage.\n")
 
     print("please select an option\n")
-    print("1: make a reservation\n")
-    print("2: check what spots on what floor are available\n")
+    print("1: purchase onsite permit\n")
+    print("2: make Online Reservation\n")
     my_input = int(input())
 
     match my_input:
         case 1:
-            reserve()
-
+            onsite = True
+            print("you have chosen to purchase an a parking permit onsite\n")
+            print("let me check if we are at capacity...\n")
+            if capacity(cap,limit) > 0:
+                print("there is not sufficent capcity in the structure to allow you to choose a spot, we will choose one for you\n")
+            elif capacity(cap,limit) < 0:
+                print("ok lets find you the perfect spot\n")
+                cap += 1
+            else:
+                print("Sorry this lot if full, please try again later, goodbye :)\n")
+        
+            
+            
+    
         case 2:
-            print("what floor?\n")
-
+            print("you have chosen to make an online reservation\n")
+            print("let me check if we are at capacity...\n")
+            if capacity(cap,limit) > 0:
+                print("there is not sufficent capcity in the structure to allow you to choose a spot, we will choose one for you\n")
+            elif capacity(cap,limit) < 0:
+                print("ok lets find you the perfect spot\n")
+                cap += 1
+            else:
+                print("Sorry this lot if full, please try again later, goodbye :)\n")
+            
 
     
 

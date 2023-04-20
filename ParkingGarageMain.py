@@ -23,13 +23,15 @@ class parkingSpace:
         return self.cost
 
 class parkingLot: 
-    def __init__(self, floors, spacePerFloor, costPerSpace) -> None:
+    def __init__(self, lotName,floors, spacePerFloor, costPerSpace) -> None:
+        self.lotName = lotName
         self.floors = floors
         self.spacePerFloor = spacePerFloor
         self.capacity = floors*spacePerFloor
         self.originalCap = floors*spacePerFloor
-        self.reservedSpace = {}
-        self.lot = [] #stores parking Space objects on each floor until the floors are properly made
+        self.reservedSpace = {} #dictionary of currently reserved spaces
+        self.lot = [] #stores parking Space objects on each floor (nested list)
+        self.netProfit = 0
 
         for floor in range(floors): #creates a double nested list that holds values for each floor (we are assuming floors are identical)
             floorlot = []
@@ -57,15 +59,25 @@ class parkingLot:
         else:
             self.capacity-=1
             return True
+    
+    def getReserved(self):
+        print(self.lotName)
+        for key in self.reservedSpace:
+            print(key,"|", self.reservedSpace[key])
         
 
 def reserveSpace(lot, reservedName): #pass in a parking lot object to reserve a space in
-    for floor in lot:
+    for floor in lot.lot:
         for space in floor:
             if space.occupied==False:
                 space.changeOccupied(reservedName)
-                lot.reservedSpaces[reservedName]=space #stores the reserved space in the lot under a dictionary with name as key and object as space
-                break
+                if reservedName in lot.reservedSpace.keys():
+                    lot.reservedSpace[reservedName].append(space) #stores the reserved space in the lot under a dictionary with name as key and object as space
+                else:
+                    lot.reservedSpace[reservedName]=[space]
+                lot.netProfit += space.getCost()
+                lot.decrementCapacity()
+                return
             else:
                 pass
 
@@ -74,13 +86,28 @@ def reserveSpace(lot, reservedName): #pass in a parking lot object to reserve a 
 def main():
     #creates a default parking lot
     lotList = []
-    newLot = parkingLot(5,20,5) #makes a parking lot that has 5 floors, 20 spaces per floor, 5 dollar cost per space
+    newLot = parkingLot("Lot A",5,20,5) #makes a parking lot that has 5 floors, 20 spaces per floor, 5 dollar cost per space
     lotList.append(newLot)
 
-    print(newLot.floors)
-    #first test
+    #Tests
     # test_lotCreation(lotList) 
-    # Lot creation works!
+    # Passes lot creation test!
+
+    test_reservation(lotList)
+    #Passes single reservation test!
+
+    test_reservation_multiple(lotList)
+    #Passes multiple reservation test!
+
+    test_reservation_redundant(lotList)
+    #FAILS REDUNDANCY TEST
+    #possible solution to store a list inside the reservation dictionary instead of single value.
+
+
+
+
+
+    
 
 def test_lotCreation(lotList):
     for lot in lotList:
@@ -89,6 +116,25 @@ def test_lotCreation(lotList):
             print(floor) #prints to console each floor in the lot with parkingSpace objects in a list format
             for space in floor:
                 print(space.getCost())
+
+def test_reservation(lotList):
+    reserveSpace(lotList[0],"Derek Zhang")
+    print(lotList[0].reservedSpace)
+    lotList[0].getReserved()
+
+def test_reservation_multiple(lotList):
+    reserveSpace(lotList[0], "Derek Zhang")
+    reserveSpace(lotList[0], "Sean Sidwell")
+    reserveSpace(lotList[0], "Johnnie Mares")
+    print(lotList[0].reservedSpace)
+    lotList[0].getReserved()
+
+def test_reservation_redundant(lotList):
+    reserveSpace(lotList[0],"Derek Zhang")
+    reserveSpace(lotList[0],"Derek Zhang")
+    reserveSpace(lotList[0],"Derek Zhang")
+    print(lotList[0].reservedSpace)
+    lotList[0].getReserved()
 
 
 main()

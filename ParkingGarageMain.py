@@ -93,8 +93,6 @@ def emptyAllSpace_Name(name, lot):
     if name not in lot.reservedSpace.keys():
         print("Name not found! Please try again.")
     else:
-        print(lot.reservedSpace[name])
-
         while lot.reservedSpace[name] != []:
             space = lot.reservedSpace[name][0]
             # print(space,":")
@@ -148,30 +146,39 @@ def main():
 
 
 
+def test_divider():
+    print("\n==================================================================")
 
 def test_lotCreation(lotList):
+    print("TEST: Lot creation:")
     for lot in lotList:
         print(lot)
         for floor in lot.returnLot():
             print(floor) #prints to console each floor in the lot with parkingSpace objects in a list format
             for space in floor:
                 print(space.getCost())
+    test_divider()
 
 def test_reservation(lotList):
+    print("TEST: Single Reservation")
     reserveSpace(lotList[0],"Derek Zhang")
     print(lotList[0].reservedSpace)
     lotList[0].getReserved()
     lotList[0].getInfo()
+    test_divider()
 
 def test_reservation_multiple(lotList):
+    print("TEST: Multiple Reservations")
     reserveSpace(lotList[0], "Derek Zhang")
     reserveSpace(lotList[0], "Sean Sidwell")
     reserveSpace(lotList[0], "Johnnie Mares")
     print(lotList[0].reservedSpace)
     lotList[0].getReserved()
     lotList[0].getInfo()
+    test_divider()
 
 def test_reservation_redundant(lotList):
+    print("TEST: Redundant Reservations")
     lotA = lotList[0]
     reserveSpace(lotA,"Derek Zhang")
     reserveSpace(lotA,"Derek Zhang")
@@ -179,18 +186,23 @@ def test_reservation_redundant(lotList):
     print(lotA.reservedSpace)
     lotA.getReserved()
     lotA.getInfo()
+    test_divider()
 
 def test_unreserveByName(lotList, name):
+    print("TEST: Unreserve all by name")
     lotA = lotList[0]
     emptyAllSpace_Name(name, lotA)
     lotA.getReserved()
     lotA.getInfo()
+    test_divider()
 
 def test_unreserveBySpace(lotList, name):
+    print("TEST: Unreserve by specific space")
     lotA=lotList[0]
     spaceA = lotA.reservedSpace[name][0]
     emptySpace_Obj(spaceA, lotA)
     lotA.getReserved()
     lotA.getInfo()
+    test_divider()
 
 main()

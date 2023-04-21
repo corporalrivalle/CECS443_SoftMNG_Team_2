@@ -1,5 +1,40 @@
 #imports
 
+class user:
+    
+    def __init__(self, name, passw, plate) -> None:
+        self.username = name
+        self.password = passw
+        self.balance = 0
+        self.carPlate = plate
+
+
+
+    def set_username (self, name):
+        self.username = name
+    
+    def set_password  (self, passw):
+        self.password = passw
+
+    def change_password (self, passw):
+        self.password = passw
+
+    def change_username (self, name):
+        self.username = name
+
+    def add_balance(self, ammount):
+       self.balance += ammount
+    
+    def get_balance(self):
+        return (self.balance)
+
+    def set_carPlate (self, carPlateNum):
+        self.carPlate = carPlateNum
+
+
+
+
+
 
 
 #class definitions

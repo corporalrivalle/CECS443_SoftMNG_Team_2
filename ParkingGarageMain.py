@@ -9,24 +9,37 @@ class user:
         self.carPlate = plate
 
 
+    def get_username (self):
+        return self.username
 
     def set_username (self, name):
         self.username = name
-    
+
+
+    def get_password (self):
+        return self.password
+
     def set_password  (self, passw):
         self.password = passw
 
-    def change_password (self, passw):
-        self.password = passw
-
-    def change_username (self, name):
-        self.username = name
 
     def add_balance(self, ammount):
        self.balance += ammount
     
+    def pay (self, ammount):
+        if (self.balance < ammount):
+            return False
+        else :
+            self.balance -= ammount
+            return True
+        
+
     def get_balance(self):
         return (self.balance)
+
+
+    def get_carPlate (self) :
+        return self.carPlate
 
     def set_carPlate (self, carPlateNum):
         self.carPlate = carPlateNum
@@ -108,15 +121,15 @@ class parkingLot:
         print("Amount of open spaces currently available:",self.capacity)
         
 
-def reserveSpace(lot, reservedName): #pass in a parking lot object to reserve a space in
+def reserveSpace(lot, user): #pass in a parking lot object to reserve a space in
     for floor in lot.lot:
         for space in floor:
             if space.occupied==False:
-                space.changeOccupied(reservedName)
-                if reservedName in lot.reservedSpace.keys():
-                    lot.reservedSpace[reservedName].append(space) #stores the reserved space in the lot under a dictionary with name as key and object as space
+                space.changeOccupied(user.get_username())
+                if user.get_username() in lot.reservedSpace.keys():
+                    lot.reservedSpace[user.get_username()].append(space) #stores the reserved space in the lot under a dictionary with name as key and object as space
                 else:
-                    lot.reservedSpace[reservedName]=[space]
+                    lot.reservedSpace[user.get_username()]=[space]
                 lot.netProfit += space.getCost()
                 lot.decrementCapacity()
                 return
@@ -157,18 +170,33 @@ def main():
     newLot = parkingLot("Lot A",5,20,5) #makes a parking lot that has 5 floors, 20 spaces per floor, 5 dollar cost per space
     lotList.append(newLot)
 
+
+    #creates users
+    userList = []
+    user1 = user("Derek Zhang", "passw1", "4CDC457")
+    user2 = user("Sean Sidwell", "passw2", "5DGV177")
+    user3 = user("Johnnie Mares", "passw3", "2KND025")
+    userList.append(user1)
+    userList.append(user2)
+    userList.append(user3)
+
+    userList[0].add_balance (100) 
+    userList[1].add_balance (100)
+    userList[2].add_balance (100)
+
+
     #Tests
     # test_lotCreation(lotList) 
     # Passes lot creation test!
 
-    test_reservation(lotList)
+    test_reservation(lotList, user1)
     #Passes single reservation test!
 
-    test_reservation_multiple(lotList)
-    #Passes multiple reservation test!
+    test_reservation_multiple(lotList, userList)
+    # #Passes multiple reservation test!
 
-    test_reservation_redundant(lotList)
-    #Passes redundancy test!
+    test_reservation_redundant(lotList, userList)
+    # #Passes redundancy test!
 
     test_unreserveByName(lotList, "Derek Zhang")
     #passes unreserve all test!
@@ -194,30 +222,30 @@ def test_lotCreation(lotList):
                 print(space.getCost())
     test_divider()
 
-def test_reservation(lotList):
+def test_reservation(lotList, user):
     print("TEST: Single Reservation")
-    reserveSpace(lotList[0],"Derek Zhang")
+    reserveSpace(lotList[0], user)
     print(lotList[0].reservedSpace)
     lotList[0].getReserved()
     lotList[0].getInfo()
     test_divider()
 
-def test_reservation_multiple(lotList):
+def test_reservation_multiple(lotList, userList):
     print("TEST: Multiple Reservations")
-    reserveSpace(lotList[0], "Derek Zhang")
-    reserveSpace(lotList[0], "Sean Sidwell")
-    reserveSpace(lotList[0], "Johnnie Mares")
+    reserveSpace(lotList[0], userList[0])
+    reserveSpace(lotList[0], userList[1])
+    reserveSpace(lotList[0], userList[2])
     print(lotList[0].reservedSpace)
     lotList[0].getReserved()
     lotList[0].getInfo()
     test_divider()
 
-def test_reservation_redundant(lotList):
+def test_reservation_redundant(lotList, userList):
     print("TEST: Redundant Reservations")
     lotA = lotList[0]
-    reserveSpace(lotA,"Derek Zhang")
-    reserveSpace(lotA,"Derek Zhang")
-    reserveSpace(lotA,"Derek Zhang")
+    reserveSpace(lotA, userList[0])
+    reserveSpace(lotA, userList[0])
+    reserveSpace(lotA, userList[0])
     print(lotA.reservedSpace)
     lotA.getReserved()
     lotA.getInfo()

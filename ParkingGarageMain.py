@@ -125,14 +125,23 @@ def reserveSpace(lot, user): #pass in a parking lot object to reserve a space in
     for floor in lot.lot:
         for space in floor:
             if space.occupied==False:
-                space.changeOccupied(user.get_username())
-                if user.get_username() in lot.reservedSpace.keys():
-                    lot.reservedSpace[user.get_username()].append(space) #stores the reserved space in the lot under a dictionary with name as key and object as space
-                else:
-                    lot.reservedSpace[user.get_username()]=[space]
-                lot.netProfit += space.getCost()
-                lot.decrementCapacity()
-                return
+                userpaystatus = user.pay(space.getCost())
+                if (userpaystatus == True):
+                    print (user.get_username(), " successfully pay for the parking lot!!!!")
+                    print (user.get_username(), " remaining balance : $", user.get_balance())
+
+                    space.changeOccupied(user.get_username())
+                    if user.get_username() in lot.reservedSpace.keys():
+                        lot.reservedSpace[user.get_username()].append(space) #stores the reserved space in the lot under a dictionary with name as key and object as space
+                    else:
+                        lot.reservedSpace[user.get_username()]=[space]
+                    lot.netProfit += space.getCost()
+
+
+
+
+                    lot.decrementCapacity()
+                    return
             else:
                 pass
 

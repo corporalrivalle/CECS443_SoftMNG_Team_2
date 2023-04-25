@@ -1,4 +1,3 @@
-import getpass
 import pymongo
 from pymongo import MongoClient
 from bson import DBRef
@@ -10,10 +9,9 @@ class Utilities:
     def startup():
         print ("--------------------------------------------")
         print("Connecting to atlast...")
-        #password = getpass.getpass(prompt='MongoDB password --> ')
-        cluster = "YOUR MONGODB CONNECTION STRING"
+        cluster = "mongodb+srv://adminuser:1234@cluster0.yrp2gy4.mongodb.net/?retryWrites=true&w=majority"
         client = MongoClient(cluster)
         # I could also have said "db = client.demo_database" to do the same thing.
-        db = client.YOURDATABASENAME
+        db = client.ParkingGarage
         print("Successful")
         return db

@@ -11,38 +11,6 @@ from Utilities import Utilities
 
 
 
-class user:
-    
-    def __init__(self, name, passw, plate) -> None:
-        self.username = name
-        self.password = passw
-        self.balance = 0.0
-        self.carPlate = plate
-
-
-    def get_username (self):
-        return self.username
-
-    def set_username (self, name):
-        self.username = name
-    
-    def set_password  (self, passw):
-        self.password = passw
-
-    def change_password (self, passw):
-        self.password = passw
-
-    def change_username (self, name):
-        self.username = name
-
-    def add_balance(self, ammount):
-       self.balance += ammount
-    
-    def get_balance(self):
-        return (self.balance)
-
-    def set_carPlate (self, carPlateNum):
-        self.carPlate = carPlateNum
 
 
 
@@ -170,14 +138,22 @@ def main():
 
     #Creating a schema
     userCredentials = db.userCredentials
-
-    # Clear all currently existing data in employee table
-    # player.delete_many({})
-
     # Creating attributes for userCredentials schema
     userCredentials.create_index([("username", pymongo.ASCENDING)], unique=True)
     userCredentials.create_index([("password", pymongo.ASCENDING)])
     userCredentials.create_index([("email", pymongo.ASCENDING)], unique = True)
+
+
+    #Creating a schema
+    userData = db.userData
+    # Creating attributes for userCredentials schema
+    userData.create_index([("username", pymongo.ASCENDING)], unique=True)
+    userData.create_index([("password", pymongo.ASCENDING)])
+    userData.create_index([("email", pymongo.ASCENDING)], unique = True)
+    userData.create_index([("balance", pymongo.ASCENDING)])
+    userData.create_index([("car_plate", pymongo.ASCENDING)])
+ 
+
 
 
 
@@ -218,6 +194,7 @@ def main():
                         leave_parking_garage = False
 
                 case 2:
+                    print ("--------------------------------------------")
                     print ("Please enter the fields below") 
                     username_input = input("username: ")
                     password_input = input("password: ") 
@@ -239,6 +216,7 @@ def main():
                         print ("email has been used! Failed to signup!")
                     if (username_validator == False & email_validator == False):
                         userCredentials.insert_one({"username": username_input, "password": password_input, "email": email_input})
+                        userData.insert_one( {"username": username_input, "password": password_input, "email": email_input, "balance": 0.0, "car_plate": None})
                         print ("sign up successfully!")
                 case 3:
                     print ("Good bye!")
@@ -246,7 +224,9 @@ def main():
                     leave_parking_garage = True
                 case 4:    
                     #used to populate some data. 
-                    populate(db, userCredentials)
+                    populate(db, userCredentials, userData)
+                case 5:
+                    delete_existing_data(db, userCredentials, userData)
                 
             
             # if leave_login == True:
@@ -268,59 +248,74 @@ def main():
 
                 match my_parking_garage_choice:
                     case 1: #Reserve 
-                        print("1: Reserve")
-                        print("2: Add Balance")
-                        print("3: See Balance")
-                        print("4: log out")
-                        print("5: exit program")
-                        print("6: run tests (made by Derek)")
+                        print("1: Reserving")
 
                     case 2: #Add Balance
-                        print("adding balance")
-                    case 3: #See Balance
-                        print ("printing balance")
-                    
-                    case 4: #Log out
+                        print ("--------------------------------------------")
+                        updated_balance = 0.0
+                        ammount_add_input = float(input("Enter your amount: $"))
+
+                        for user_data_document in userData.find({}):
+                            if (logged_in_username == user_data_document["username"]):                        
+                                updated_balance = user_data_document["balance"] + float(ammount_add_input)
+                                userData.update_one({"username": logged_in_username},
+                                                     {"$set": {"balance": float(updated_balance)}})
+                                print ("Adding balance successfully!")
+                                break
+
+                        for user_data_document in userData.find({}):
+                            if (logged_in_username == user_data_document["username"]):  
+                                print ("Your new balance is: $", user_data_document["balance"])
+                                break
+
+                    case 3: #Add A Carplate
+                        print ("--------------------------------------------")
+                        updated_balance = 0.0
+                        carPlate_add_input = input("Please enter your new car plate to register: ")
+                        for user_data_document in userData.find({}):
+                            # the input car plate has been registered to the database by a different user
+                            if (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username != user_data_document["username"]):
+                                print ("--------------------------------------------")
+                                print ("Failed to register!")                               
+                                print ("This car plate has been registered to a different user")
+                                break
+                            # the input carplate has been registered to the database by this user
+                            elif (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username == user_data_document["username"]):
+                                print ("--------------------------------------------")
+                                print ("Failed to register!") 
+                                print ("This car plate has been registered to your account")
+                                break
+
+                            elif (logged_in_username == user_data_document["username"]):
+                                userData.update_one({"username": logged_in_username},
+                                                     {"$set": {"car_plate": carPlate_add_input}})
+                                print ("Adding car plate successfully!")                     
+                                break
+
+                    case 4: #See Account details
+                        for user_data_document in userData.find({}):
+                            if (logged_in_username == user_data_document["username"]):
+                                print ("--------------------------------------------")
+                                print ("Your username is: ", user_data_document["username"])
+                                print ("Your password is: ", user_data_document["password"])
+                                print ("Your registered email is: ", user_data_document["email"])
+                                print ("Your current balance is: $", user_data_document["balance"])
+                                print ("Your registered carplate is: ", user_data_document["car_plate"])
+ 
+                                break
+
+                    case 5: #Log out
                         print ("--------------------------------------------")
                         print ("logging out...")
                         logged_in_username = ""
                         leave_login = False
                         leave_parking_garage = True
 
-                    case 5: # exit program
+                    case 6: # exit program
                         print ("goodbye!")
                         leave_login = True
                         leave_parking_garage = True
 
-                    case 6: #run tests
-                        #creates a default parking lot
-                        lotList = []
-                        newLot = parkingLot("Lot A",5,20,5) #makes a parking lot that has 5 floors, 20 spaces per floor, 5 dollar cost per space
-                        lotList.append(newLot)
-
-
-
-                        user1 = user("Dat Pham","StrongPassw", "5SHC125")
-
-
-                        #Tests
-                        # test_lotCreation(lotList) 
-                        # Passes lot creation test!
-
-                        test_reservation(lotList)
-                        #Passes single reservation test!
-
-                        test_reservation_multiple(lotList)
-                        #Passes multiple reservation test!
-
-                        test_reservation_redundant(lotList)
-                        #Passes redundancy test!
-
-                        test_unreserveByName(lotList, "Derek Zhang")
-                        #passes unreserve all test!
-
-                        test_unreserveBySpace(lotList,"Sean Sidwell")
-                        #passes specific unreserve test!
                 
                 if leave_parking_garage == True:
                     break
@@ -331,10 +326,11 @@ def print_login_menu():
     print ("Welcome to the Automated parking garage. Please login or signup to use our program!")
 
     print("please select an option")
-    print("1: sign in")
-    print("2: sign up")
-    print("3: exit")
+    print("1: Sign In")
+    print("2: Sign Up")
+    print("3: Exit")
     print("4: populate some default data to the database (used for testing)")
+    print("5: delete existing data in the database (used for testing)")
 
 
 def print_parking_garage_menu(logged_in_username):
@@ -343,73 +339,17 @@ def print_parking_garage_menu(logged_in_username):
     print("Please select an option")
     print("1: Reserve")
     print("2: Add Balance")
-    print("3: See Balance")
-    print("4: log out")
-    print("5: exit program")
-    print("6: run tests")
+    print("3: Add/Change A Carplate")
+    print("4: See Your Account Details")
+    print("5: Log Out")
+    print("6: Exit Program")
 
-def test_divider():
-    print("\n==================================================================")
 
-def test_lotCreation(lotList):
-    print("TEST: Lot creation:")
-    for lot in lotList:
-        print(lot)
-        for floor in lot.returnLot():
-            print(floor) #prints to console each floor in the lot with parkingSpace objects in a list format
-            for space in floor:
-                print(space.getCost())
-    test_divider()
-
-def test_reservation(lotList):
-    print("TEST: Single Reservation")
-    reserveSpace(lotList[0],"Derek Zhang")
-    print(lotList[0].reservedSpace)
-    lotList[0].getReserved()
-    lotList[0].getInfo()
-    test_divider()
-
-def test_reservation_multiple(lotList):
-    print("TEST: Multiple Reservations")
-    reserveSpace(lotList[0], "Derek Zhang")
-    reserveSpace(lotList[0], "Sean Sidwell")
-    reserveSpace(lotList[0], "Johnnie Mares")
-    print(lotList[0].reservedSpace)
-    lotList[0].getReserved()
-    lotList[0].getInfo()
-    test_divider()
-
-def test_reservation_redundant(lotList):
-    print("TEST: Redundant Reservations")
-    lotA = lotList[0]
-    reserveSpace(lotA,"Derek Zhang")
-    reserveSpace(lotA,"Derek Zhang")
-    reserveSpace(lotA,"Derek Zhang")
-    print(lotA.reservedSpace)
-    lotA.getReserved()
-    lotA.getInfo()
-    test_divider()
-
-def test_unreserveByName(lotList, name):
-    print("TEST: Unreserve all by name")
-    lotA = lotList[0]
-    emptyAllSpace_Name(name, lotA)
-    lotA.getReserved()
-    lotA.getInfo()
-    test_divider()
-
-def test_unreserveBySpace(lotList, name):
-    print("TEST: Unreserve by specific space")
-    lotA=lotList[0]
-    spaceA = lotA.reservedSpace[name][0]
-    emptySpace_Obj(spaceA, lotA)
-    lotA.getReserved()
-    lotA.getInfo()
-    test_divider()
+# delete account? change email?  change password? remove carplate?
 
 
 
-def populate (db, userCredentials):
+def populate (db, userCredentials, userData):
 
     # inserting default data for user
     userCredentials_result = userCredentials.insert_many([
@@ -418,6 +358,19 @@ def populate (db, userCredentials):
         {"username": "user3", "password": "passw3", "email": "user.03@gmail.com"},
 
     ])
+
+    userData_result = userData.insert_many( [
+        {"username": "user1", "password": "passw1", "email": "user.01@gmail.com", "balance": 10.0, "car_plate": None},
+        {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": None},
+        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": "4SDE258"},
+    ])
     print ("--------------------------------------------")
     print ("Populate successfully")
+
+def delete_existing_data(db, userCredentials, userData):
+    # Clear all currently existing data in all table table
+    userCredentials.delete_many({})
+    userData.delete_many({})
+    print ("--------------------------------------------")
+    print ("Delete successfully")
 main()

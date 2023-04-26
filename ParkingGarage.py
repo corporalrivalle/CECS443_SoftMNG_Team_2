@@ -26,8 +26,33 @@ def capacity(cap, lim):
         return 0
     
 
-def showGarage (mat [rows] [cols])
-    d
+def showGarage(mat,r,c):
+    for i in range(r):
+            for j in range(c):
+                print(mat[i][j], end = " ")
+            print("\n")
+
+
+def reserveSpot(mat):
+    print(" enter what floor you want. ex A3")
+    a =[]
+    a.append((input()))
+    if(a[0]=='a'or a[0]=='a'):
+            print("first row")
+            f = 0
+    elif(a[0]=='B' or a[0]=='b'):
+            print("first row")
+            f = 1
+    elif(a[0]=='C' or a[0]=='c'):
+            print("first row")
+            f = 2
+    print("enter number of the spot you want (1-6)")
+
+    spot = int(input())
+
+    mat[f][spot-1] = colored('|_____|', 'red')
+
+    return mat
 
 
 def main ():
@@ -59,7 +84,10 @@ def main ():
             mat[i][j] = colored('|_____|', 'blue')
         print()
 
-    
+    showGarage(mat,rows,cols)
+    reserveSpot(mat)
+    showGarage(mat,rows,cols)
+    """
     while(1):
         for i in range(rows):
             for j in range(cols):
@@ -84,7 +112,7 @@ def main ():
         mat[f][spot-1] = colored('|_____|', 'red')
         
         
-
+"""
 """
         print ("Welcome to the Automated parking garage.\n")
 

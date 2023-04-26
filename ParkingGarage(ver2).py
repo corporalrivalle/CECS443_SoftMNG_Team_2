@@ -303,15 +303,86 @@ def main():
                                 print ("Your registered carplate is: ", user_data_document["car_plate"])
  
                                 break
+                    case 5: #delete account
+                        print ("--------------------------------------------")
+                        delete_input = input("Are you sure you want to delete this account? Y/N: ")
+                        exit_delete_account = False
+                        while 1:
 
-                    case 5: #Log out
+                            if (delete_input == "y") or (delete_input == "Y"):
+                                #delete account
+                                for userData_document in userData.find({}):
+                                    if (userData_document["username"] == logged_in_username):
+                                        db.userData.delete_one({"username": userData_document["username"]})
+                                        db.userCredentials.delete_one({"username": userData_document["username"]})
+                                        print ("--------------------------------------------")
+                                        print ("Deletion successfully!")
+                                        exit_delete_account = True
+                                        logged_in_username = ""
+                                        leave_login = False
+                                        leave_parking_garage = True
+                                        print ("Redirecting back to signin/signup menu...")
+                                        break
+                                pass
+                            elif (delete_input == "n") or (delete_input == "N"):
+                                #redirect to parking garage menu
+                                exit_delete_account = True
+                                print ("--------------------------------------------")
+                                print ("Redirecting back to parking garage menu...")
+                                pass
+                            else: 
+                                print ("invalid input")
+                                delete_input = input("Are you sure you want to delete this account? Y/N: ")
+
+                            if (exit_delete_account == True):
+                                break
+                    
+                    case 6:# change password
+                        print ("--------------------------------------------")
+                        old_pass_input = input("Please enter your current password or exit: ")
+
+                        exit_pass_change = False
+                        while 1: 
+                            if ( old_pass_input == "exit"):
+                                print ("--------------------------------------------")
+                                print ("Redirecting to parking garage menu....")
+                                break
+                            for userData_document in userData.find({}):
+                                if (userData_document["password"] == old_pass_input):
+                                    print ("--------------------------------------------")
+                                    print ("Success")
+                                    new_pass_input = input("Please enter your new password: ")
+                                    userData.update_one({"username": logged_in_username},
+                                                     {"$set": {"password": new_pass_input}})
+                                    for userCredentials_document in userCredentials.find({}):
+                                        userCredentials.update_one({"username": logged_in_username},
+                                                     {"$set": {"password": new_pass_input}})
+                                        break
+                                    print ("Password changed")
+                                    exit_pass_change = True
+                                    print ("--------------------------------------------")
+                                    print ("Redirecting to parking garage menu....")
+                                    break
+                            if (exit_pass_change == True) :
+                                break 
+                            print ("--------------------------------------------")
+                            print ("invalid password")
+                            old_pass_input = input("Please enter your current password or exit: ")
+
+                                    
+
+
+
+
+
+                    case 7: #Log out
                         print ("--------------------------------------------")
                         print ("logging out...")
                         logged_in_username = ""
                         leave_login = False
                         leave_parking_garage = True
 
-                    case 6: # exit program
+                    case 8: # exit program
                         print ("goodbye!")
                         leave_login = True
                         leave_parking_garage = True
@@ -341,8 +412,10 @@ def print_parking_garage_menu(logged_in_username):
     print("2: Add Balance")
     print("3: Add/Change A Carplate")
     print("4: See Your Account Details")
-    print("5: Log Out")
-    print("6: Exit Program")
+    print("5: Delete Account")
+    print("6: Change Password")    
+    print("7: Log Out")
+    print("8: Exit Program")
 
 
 # delete account? change email?  change password? remove carplate?

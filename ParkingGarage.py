@@ -1,5 +1,11 @@
 import numpy as nps
 import pandas as pd
+from  termcolor import colored
+class permit:
+    def __init__(self, floorNum, spotNum, licencePlate):
+        self.fn = floorNum
+        self.sn = spotNum
+        self.lp = licencePlate
 
 def reserve():
     print("choose 1 for onsite or 2 for online?\n")
@@ -18,6 +24,10 @@ def capacity(cap, lim):
         return 1
     else:
         return 0
+    
+
+def showGarage (mat [rows] [cols])
+    d
 
 
 def main ():
@@ -26,14 +36,56 @@ def main ():
     lot = [ [0,0,0,0,0,0,0],
            [0,0,0,0,0,0,0],
            [0,0,0,0,0,0,0]]
+    rows = 3
+    cols = 6
+    mat = [[0 for _ in range(cols)] for _ in range(rows)]
     cap=0
     limit = 16
     end = 4
     
-    while 1:
-        onsite=False
-        online = False
-        leave = False
+   # while 1:
+    onsite=False
+    online = False
+    leave = False
+    floor = 0
+    spot = 0
+    lp = " "
+  
+    for i in mat:
+        print('\t'.join(map(str, i)))
+
+    for i in range(rows):
+        for j in range(cols):
+            mat[i][j] = colored('|_____|', 'blue')
+        print()
+
+    
+    while(1):
+        for i in range(rows):
+            for j in range(cols):
+                print(mat[i][j], end = " ")
+            print("\n")
+        print(" enter what floor you want. ex A3")
+        a =[]
+        a.append((input()))
+        if(a[0]=='a'or a[0]=='a'):
+            print("first row")
+            f = 0
+        elif(a[0]=='B' or a[0]=='b'):
+            print("first row")
+            f = 1
+        elif(a[0]=='C' or a[0]=='c'):
+            print("first row")
+            f = 2
+        print("enter number of the spot you want (1-6)")
+
+        spot = int(input())
+
+        mat[f][spot-1] = colored('|_____|', 'red')
+        
+        
+
+"""
         print ("Welcome to the Automated parking garage.\n")
 
         print("please select an option\n")
@@ -71,9 +123,16 @@ def main ():
                 print("you have chosen to cancel your request, goodbye :)")
                 leave = True
                 
-        
+        choice = int(input)
         if onsite == True:
-            print("onsite is true\n")
+            print("please choose one of the following options\n")
+            print("choose a floor")
+
+            match choice:
+
+                case 1:
+
+                    print("")
         elif online == True:
             print("online reservation is true\n")
         elif leave == True:
@@ -84,9 +143,8 @@ def main ():
 
   
 
-
     
-
+"""
 
 
 

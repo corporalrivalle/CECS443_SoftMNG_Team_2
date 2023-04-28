@@ -45,7 +45,7 @@ def main():
     parkingData.create_index([("floor#", pymongo.ASCENDING)],)
     parkingData.create_index([("spot#", pymongo.ASCENDING)])
     parkingData.create_index([("reserve_status", pymongo.ASCENDING)])
-
+    parkingData.create_index([("reserver_username", pymongo.ASCENDING)])
 
     # testing(parkingData)
 
@@ -156,7 +156,12 @@ def main():
                         reserveSpot(mat, parkingData, logged_in_username, userData, cols)
                         showGarage(mat,rows,cols, parkingData)
 
-                    case 2: #Add Balance
+                    case 2: # leave Reserve
+                        #call leave reserve function here
+
+
+
+                    case 3: #Add Balance
                         print ("--------------------------------------------")
                         updated_balance = 0.0
                         ammount_add_input = float(input("Enter your amount: $"))
@@ -174,7 +179,7 @@ def main():
                                 print ("Your new balance is: $", user_data_document["balance"])
                                 break
 
-                    case 3: #Add A Carplate
+                    case 4: #Add A Carplate
                         print ("--------------------------------------------")
                         carPlate_add_input = input("Please enter your new car plate to register: ")
                         for user_data_document in userData.find({}):
@@ -197,7 +202,7 @@ def main():
                                 print ("Adding car plate successfully!")                     
                                 break
 
-                    case 4: #See Account details
+                    case 5: #See Account details
                         for user_data_document in userData.find({}):
                             if (logged_in_username == user_data_document["username"]):
                                 print ("--------------------------------------------")
@@ -208,7 +213,7 @@ def main():
                                 print ("Your registered carplate is: ", user_data_document["car_plate"])
  
                                 break
-                    case 5: #delete account
+                    case 6: #delete account
                         print ("--------------------------------------------")
                         delete_input = input("Are you sure you want to delete this account? Y/N: ")
                         exit_delete_account = False
@@ -242,7 +247,7 @@ def main():
                             if (exit_delete_account == True):
                                 break
                     
-                    case 6:# change password
+                    case 7:# change password
                         print ("--------------------------------------------")
                         old_pass_input = input("Please enter your current password or exit: ")
 
@@ -280,14 +285,14 @@ def main():
 
 
 
-                    case 7: #Log out
+                    case 8: #Log out
                         print ("--------------------------------------------")
                         print ("logging out...")
                         logged_in_username = ""
                         leave_login = False
                         leave_parking_garage = True
 
-                    case 8: # exit program
+                    case 9: # exit program
                         print ("goodbye!")
                         leave_login = True
                         leave_parking_garage = True
@@ -314,13 +319,14 @@ def print_parking_garage_menu(logged_in_username):
     print ("Hello", logged_in_username, "! Welcome to the Automated parking garage!")
     print("Please select an option")
     print("1: Reserve")
-    print("2: Add Balance")
-    print("3: Add/Change A Carplate")
-    print("4: See Your Account Details")
-    print("5: Delete Account")
-    print("6: Change Password")    
-    print("7: Log Out")
-    print("8: Exit Program")
+    print("2: Leave Reserve")
+    print("3: Add Balance")
+    print("4: Add/Change A Carplate")
+    print("5: See Your Account Details")
+    print("6: Delete Account")
+    print("7: Change Password")    
+    print("8: Log Out")
+    print("9: Exit Program")
 
 
 # delete account? change email?  change password? remove carplate?
@@ -342,30 +348,28 @@ def populate (db, userCredentials, userData, parkingData):
         {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": None},
         {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": "4SDE258"},
     ])
-    parkingData.create_index([("floor#", pymongo.ASCENDING)],)
-    parkingData.create_index([("spot#", pymongo.ASCENDING)])
-    parkingData.create_index([("reserve_status", pymongo.ASCENDING)])
+
     parkingData_result = parkingData.insert_many( [
-        {"floor#": 0, "spot#": 0, "reserve_status": False},
-        {"floor#": 0, "spot#": 1, "reserve_status": False},
-        {"floor#": 0, "spot#": 2, "reserve_status": False},
-        {"floor#": 0, "spot#": 3, "reserve_status": True},
-        {"floor#": 0, "spot#": 4, "reserve_status": False},
-        {"floor#": 0, "spot#": 5, "reserve_status": False},
+        {"floor#": 0, "spot#": 0, "reserve_status": False, "reserver_name": None},
+        {"floor#": 0, "spot#": 1, "reserve_status": False, "reserver_name": None},
+        {"floor#": 0, "spot#": 2, "reserve_status": False, "reserver_name": None},
+        {"floor#": 0, "spot#": 3, "reserve_status": True, "reserver_name": "user2"},
+        {"floor#": 0, "spot#": 4, "reserve_status": False, "reserver_name": None},
+        {"floor#": 0, "spot#": 5, "reserve_status": False, "reserver_name": None},
 
-        {"floor#": 1, "spot#": 0, "reserve_status": False},
-        {"floor#": 1, "spot#": 1, "reserve_status": False},
-        {"floor#": 1, "spot#": 2, "reserve_status": False},
-        {"floor#": 1, "spot#": 3, "reserve_status": False},
-        {"floor#": 1, "spot#": 4, "reserve_status": False},
-        {"floor#": 1, "spot#": 5, "reserve_status": False},
+        {"floor#": 1, "spot#": 0, "reserve_status": False, "reserver_name": None},
+        {"floor#": 1, "spot#": 1, "reserve_status": False, "reserver_name": None},
+        {"floor#": 1, "spot#": 2, "reserve_status": False, "reserver_name": None},
+        {"floor#": 1, "spot#": 3, "reserve_status": False, "reserver_name": None},
+        {"floor#": 1, "spot#": 4, "reserve_status": False, "reserver_name": None},
+        {"floor#": 1, "spot#": 5, "reserve_status": False, "reserver_name": None},
 
-        {"floor#": 2, "spot#": 0, "reserve_status": False},
-        {"floor#": 2, "spot#": 1, "reserve_status": True},
-        {"floor#": 2, "spot#": 2, "reserve_status": False},
-        {"floor#": 2, "spot#": 3, "reserve_status": False},
-        {"floor#": 2, "spot#": 4, "reserve_status": False},
-        {"floor#": 2, "spot#": 5, "reserve_status": False},
+        {"floor#": 2, "spot#": 0, "reserve_status": False, "reserver_name": None},
+        {"floor#": 2, "spot#": 1, "reserve_status": True, "reserver_name": "user1"},
+        {"floor#": 2, "spot#": 2, "reserve_status": False, "reserver_name": None},
+        {"floor#": 2, "spot#": 3, "reserve_status": False, "reserver_name": None},
+        {"floor#": 2, "spot#": 4, "reserve_status": False, "reserver_name": None},
+        {"floor#": 2, "spot#": 5, "reserve_status": False, "reserver_name": None},
 
 
     ])
@@ -400,37 +404,39 @@ def showGarage(mat,r,c, parkingData):
 
 
 def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
+
     leave_reserveSpot = False
-   
+    a =[]
     input1 = False
     input2 = False
     while(input1 == False):
         floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
-        a =[]
-        a.append(floor_name)
+        if (floor_name.upper() == 'A')  or (floor_name.upper() == 'B')  or (floor_name.upper() == 'C'):
+            a.append(floor_name)
         if(a[0]=='A'or a[0]=='a'):
                 print ("--------------------------------------------")
-                print("You Selected Third floor")
+                print("You Selected A floor")
                 floor_input = 0
                 input1 = True
         elif(a[0]=='B' or a[0]=='b'):
                 print ("--------------------------------------------")
-                print("You Selected Second floor")
+                print("You Selected B floor")
                 floor_input = 1
                 input1=True
         elif(a[0]=='C' or a[0]=='c'):
                 print ("--------------------------------------------")
-                print("You Selected First Floor")
+                print("You Selected C Floor")
                 floor_input = 2
                 input1=True
+        else: 
+            print ("invalid input")
 
 
     print ("--------------------------------------------")
     while(input2 == False):
-        
+        spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
         try:
-            spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
-           
+            print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
             if(spot_input > cols-1 or spot_input <1 ):
                 print("invalid spot number, please try again")
             else:
@@ -438,9 +444,6 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
         except:
              print("not a number, try again")
 
-
-    print ("You selected parking Slot ", floor_name.upper(), floor_input-1, " and it will cost you $10.0" )
-    mat[floor_input][spot_input-1] = colored('|_____|', 'red')
 
 
 

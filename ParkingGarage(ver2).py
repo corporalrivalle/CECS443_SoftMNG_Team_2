@@ -158,7 +158,7 @@ def main():
 
                     case 2: # leave Reserve
                         #call leave reserve function here
-
+                        pass
 
 
                     case 3: #Add Balance
@@ -413,33 +413,36 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
         floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
         if (floor_name.upper() == 'A')  or (floor_name.upper() == 'B')  or (floor_name.upper() == 'C'):
             a.append(floor_name)
-        if(a[0]=='A'or a[0]=='a'):
-                print ("--------------------------------------------")
-                print("You Selected A floor")
-                floor_input = 0
-                input1 = True
-        elif(a[0]=='B' or a[0]=='b'):
-                print ("--------------------------------------------")
-                print("You Selected B floor")
-                floor_input = 1
-                input1=True
-        elif(a[0]=='C' or a[0]=='c'):
-                print ("--------------------------------------------")
-                print("You Selected C Floor")
-                floor_input = 2
-                input1=True
+            if(a[0]=='A'or a[0]=='a'):
+                    print ("--------------------------------------------")
+                    print("You Selected A floor")
+                    floor_input = 0
+                    input1 = True
+            elif(a[0]=='B' or a[0]=='b'):
+                    print ("--------------------------------------------")
+                    print("You Selected B floor")
+                    floor_input = 1
+                    input1=True
+            elif(a[0]=='C' or a[0]=='c'):
+                    print ("--------------------------------------------")
+                    print("You Selected C Floor")
+                    floor_input = 2
+                    input1=True
         else: 
             print ("invalid input")
+
+
 
 
     print ("--------------------------------------------")
     while(input2 == False):
         spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
         try:
-            print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
+
             if(spot_input > cols-1 or spot_input <1 ):
                 print("invalid spot number, please try again")
             else:
+                print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
                 input2 = True
         except:
              print("not a number, try again")

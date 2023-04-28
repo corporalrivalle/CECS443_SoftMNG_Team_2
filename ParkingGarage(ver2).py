@@ -158,7 +158,12 @@ def main():
 
                     case 2: # leave Reserve
                         #call leave reserve function here
-                        pass
+                        rows = 3
+                        cols = 6
+                        mat = [[0 for _ in range(cols)] for _ in range(rows)]
+                        showGarage(mat,rows,cols, parkingData)
+                        leavingLot(mat, parkingData, logged_in_username, userData, cols)
+                        showGarage(mat,rows,cols, parkingData)
 
 
                     case 3: #Add Balance
@@ -442,9 +447,10 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
 
     print ("--------------------------------------------")
     while(input2 == False):
-        spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
+        
         try:
-
+            spot_input=[]
+            spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
             if(spot_input > cols-1 or spot_input <1 ):
                 print("invalid spot number, please try again")
             else:
@@ -517,26 +523,66 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
 
     return mat
 
-def leavingLot(mat):
+def leavingLot(mat, parkingData, logged_in_username, userData, cols):
     print(" You are now leaving the parking structure")
     print("please enter your floor number")
+    leave_reserveSpot = True
     a =[]
-    a.append((input()))
-    if(a[0]=='a'or a[0]=='a'):
-            print("first row")
-            f = 0
-    elif(a[0]=='B' or a[0]=='b'):
-            print("first row")
-            f = 1
-    elif(a[0]=='C' or a[0]=='c'):
-            print("first row")
-            f = 2
-    print("please enter the number of the spot you are leaving (1-6)")
+    input1 = False
+    input2 = False
+    while(input1 == False):
+        floor_name = input("Please enter what floor you are leaving. ex A, B or C  --> ")
+        if (floor_name.upper() == 'A')  or (floor_name.upper() == 'B')  or (floor_name.upper() == 'C'):
+            a.append(floor_name)
+            if(a[0]=='A'or a[0]=='a'):
+                    print ("--------------------------------------------")
+                    print("You Selected A floor")
+                    floor_name = 0
+                    input1 = True
+            elif(a[0]=='B' or a[0]=='b'):
+                    print ("--------------------------------------------")
+                    print("You Selected B floor")
+                    floor_name = 1
+                    input1=True
+            elif(a[0]=='C' or a[0]=='c'):
+                    print ("--------------------------------------------")
+                    print("You Selected C Floor")
+                    floor_name = 2
+                    input1=True
+        else: 
+            print ("invalid input")
 
-    spot = int(input())
 
-    mat[f][spot-1] = colored('|_____|', 'blue')
 
-    return mat
+
+    print ("--------------------------------------------")
+    while(input2 == False):
+        
+        
+            spot_input2=[]
+            spot_input2 = int(input("Please enter spot number you want to leave (1-6) --> "))
+            if(spot_input2 > cols-1 or spot_input2 <1 ):
+                print("invalid spot number, please try again")
+            else:
+                print ("You selected parking Slot ", a[0].upper(), spot_input2 )
+                input2 = True
+        
+    print("not a number, try again")
+
+
+
+    for parkingData_document in parkingData.find({}):
+
+        if (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] == logged_in_username):
+
+            for user_data_document in userData.find({}):
+                parkingData.update_one({"_id": parkingData_document["_id"]},
+                {"$set": {"reserve_status": False}},)
+                parkingData.update_one({"_id": parkingData_document["_id"]},
+                {"$set": {"reserver_name": None}},)
+
+    if (leave_reserveSpot == True):
+                return mat
+
 
 main()

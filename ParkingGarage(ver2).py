@@ -401,11 +401,12 @@ def showGarage(mat,r,c, parkingData):
 
 def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
     leave_reserveSpot = False
-    a =[]
+   
     input1 = False
     input2 = False
     while(input1 == False):
         floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
+        a =[]
         a.append(floor_name)
         if(a[0]=='A'or a[0]=='a'):
                 print ("--------------------------------------------")
@@ -426,9 +427,10 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
 
     print ("--------------------------------------------")
     while(input2 == False):
-        spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
+        
         try:
-            print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
+            spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
+           
             if(spot_input > cols-1 or spot_input <1 ):
                 print("invalid spot number, please try again")
             else:
@@ -436,6 +438,8 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
         except:
              print("not a number, try again")
 
+
+    print ("You selected parking Slot ", floor_name.upper(), floor_input-1, " and it will cost you $10.0" )
     mat[floor_input][spot_input-1] = colored('|_____|', 'red')
 
 

@@ -8,7 +8,7 @@ from bson import DBRef
 from pymongo import MongoClient
 from pprint import pprint
 from Utilities import Utilities
-
+from  termcolor import colored
 
 
 
@@ -249,7 +249,25 @@ def main():
                 match my_parking_garage_choice:
                     case 1: #Reserve 
                         print("1: Reserving")
+                        rows = 3
+                        cols = 6
+                        mat = [[0 for _ in range(cols)] for _ in range(rows)]
+                    
+                    
+                    
+                        for i in mat:
+                            print('\t'.join(map(str, i)))
 
+                        for i in range(rows):
+                            for j in range(cols):
+                                mat[i][j] = colored('|_____|', 'blue')
+                            print()
+
+                        showGarage(mat,rows,cols)
+                        reserveSpot(mat)
+                        showGarage(mat,rows,cols)
+                        leavingLot(mat)
+                        showGarage(mat,rows,cols)
                     case 2: #Add Balance
                         print ("--------------------------------------------")
                         updated_balance = 0.0
@@ -446,4 +464,54 @@ def delete_existing_data(db, userCredentials, userData):
     userData.delete_many({})
     print ("--------------------------------------------")
     print ("Delete successfully")
+
+def showGarage(mat,r,c):
+    for i in range(r):
+            for j in range(c):
+                print(mat[i][j], end = " ")
+            print("\n")
+
+
+def reserveSpot(mat):
+    print(" enter what floor you want. ex A3")
+    a =[]
+    a.append((input()))
+    if(a[0]=='a'or a[0]=='a'):
+            print("first row")
+            f = 0
+    elif(a[0]=='B' or a[0]=='b'):
+            print("first row")
+            f = 1
+    elif(a[0]=='C' or a[0]=='c'):
+            print("first row")
+            f = 2
+    print("enter number of the spot you want (1-6)")
+
+    spot = int(input())
+
+    mat[f][spot-1] = colored('|_____|', 'red')
+
+    return mat
+
+def leavingLot(mat):
+    print(" You are now leaving the parking structure")
+    print("please enter your floor number")
+    a =[]
+    a.append((input()))
+    if(a[0]=='a'or a[0]=='a'):
+            print("first row")
+            f = 0
+    elif(a[0]=='B' or a[0]=='b'):
+            print("first row")
+            f = 1
+    elif(a[0]=='C' or a[0]=='c'):
+            print("first row")
+            f = 2
+    print("please enter the number of the spot you are leaving (1-6)")
+
+    spot = int(input())
+
+    mat[f][spot-1] = colored('|_____|', 'blue')
+
+    return mat
 main()

@@ -153,7 +153,7 @@ def main():
                         #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'red');
                         
                         showGarage(mat,rows,cols, parkingData)
-                        reserveSpot(mat, parkingData, logged_in_username, userData)
+                        reserveSpot(mat, parkingData, logged_in_username, userData, cols)
                         showGarage(mat,rows,cols, parkingData)
 
                     case 2: #Add Balance
@@ -399,29 +399,44 @@ def showGarage(mat,r,c, parkingData):
         print("\n")
 
 
-def reserveSpot(mat, parkingData, logged_in_username, userData):
+def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
     leave_reserveSpot = False
     a =[]
-    floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
-    a.append(floor_name)
-    if(a[0]=='A'or a[0]=='a'):
-            print ("--------------------------------------------")
-            print("You Selected Third floor")
-            floor_input = 0
-    elif(a[0]=='B' or a[0]=='b'):
-            print ("--------------------------------------------")
-            print("You Selected Second floor")
-            floor_input = 1
-    elif(a[0]=='C' or a[0]=='c'):
-            print ("--------------------------------------------")
-            print("You Selected First Floor")
-            floor_input = 2
+    input1 = False
+    input2 = False
+    while(input1 == False):
+        floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
+        a.append(floor_name)
+        if(a[0]=='A'or a[0]=='a'):
+                print ("--------------------------------------------")
+                print("You Selected Third floor")
+                floor_input = 0
+                input1 = True
+        elif(a[0]=='B' or a[0]=='b'):
+                print ("--------------------------------------------")
+                print("You Selected Second floor")
+                floor_input = 1
+                input1=True
+        elif(a[0]=='C' or a[0]=='c'):
+                print ("--------------------------------------------")
+                print("You Selected First Floor")
+                floor_input = 2
+                input1=True
 
 
     print ("--------------------------------------------")
-    spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
-    print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
-    # mat[floor_input][spot_input-1] = colored('|_____|', 'red')
+    while(input2 == False):
+        spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
+        try:
+            print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
+            if(spot_input > cols-1 or spot_input <1 ):
+                print("invalid spot number, please try again")
+            else:
+                input2 = True
+        except:
+             print("not a number, try again")
+
+    mat[floor_input][spot_input-1] = colored('|_____|', 'red')
 
 
 

@@ -211,7 +211,13 @@ def main():
                                 print ("Your registered email is: ", user_data_document["email"])
                                 print ("Your current balance is: $", user_data_document["balance"])
                                 print ("Your registered carplate is: ", user_data_document["car_plate"])
- 
+                                user_owned_parking_spot = []
+                                for parkingData_document in parkingData.find({}):
+                                    if (parkingData_document["reserver_name"] == logged_in_username):
+                                        user_owned_parking_spot.append(parkingData_document["_id"])
+                                print ("Your currently reserved Spots are: ")
+                                for i in user_owned_parking_spot:
+                                    print (i)
                                 break
                     case 6: #delete account
                         print ("--------------------------------------------")
@@ -442,7 +448,7 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
             if(spot_input > cols-1 or spot_input <1 ):
                 print("invalid spot number, please try again")
             else:
-                print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
+                print ("You selected parking Slot ", floor_name.upper(), spot_input )
                 input2 = True
         except:
              print("not a number, try again")
@@ -452,28 +458,52 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
 
 
 
-
-    for user_data_document in userData.find({}):
-        if (logged_in_username == user_data_document["username"]) and (user_data_document["balance"] >= 10.0):                        
-            updated_balance = user_data_document["balance"] - 10.0
-            userData.update_one({"username": logged_in_username},
-                {"$set": {"balance": float(updated_balance)}})
-            break
-        elif ((logged_in_username == user_data_document["username"]) and (user_data_document["balance"] < 10.0)):
-            print ("--------------------------------------------")
-            print ("Insufficent fund to reserve, please add more money to your balance")
-            leave_reserveSpot = True
-            break
-    if (leave_reserveSpot == True):
-        return mat
-
     for parkingData_document in parkingData.find({}):
-         if (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1):
-            parkingData.update_one({"_id": parkingData_document["_id"]},
-                {"$set": {"reserve_status": True}})
+         
+         if (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == None):
+
+            for user_data_document in userData.find({}):
+                if (logged_in_username == user_data_document["username"]) and (user_data_document["balance"] >= 10.0):                        
+                    updated_balance = user_data_document["balance"] - 10.0
+                    userData.update_one({"username": logged_in_username},
+                        {"$set": {"balance": float(updated_balance)}})
+                    parkingData.update_one({"_id": parkingData_document["_id"]},
+                        {"$set": {"reserve_status": True}},)
+                    parkingData.update_one({"_id": parkingData_document["_id"]},
+                        {"$set": {"reserver_name": logged_in_username}},)
+                    print ("--------------------------------------------")
+                    print ("The selected parking Slot will cost $10.0...")
+                    break
+
+                elif ((logged_in_username == user_data_document["username"]) and (user_data_document["balance"] < 10.0)):
+                    print ("--------------------------------------------")
+                    print ("Insufficent fund to reserve, please add more money to your balance")
+                    print ("Redirecting...")
+                    leave_reserveSpot = True
+                    break
+            if (leave_reserveSpot == True):
+                return mat
+
+
             print ("--------------------------------------------")
             print ("Reserve successfully")
             break
+         elif (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == logged_in_username):
+            print ("--------------------------------------------")
+            print ("This current parking spot has been reserved by you")
+            print ("Redirecting...")
+            leave_reserveSpot = True
+         elif (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] != logged_in_username):
+            print ("--------------------------------------------")
+            print ("This current parking spot has been reserved by someone")
+            print ("Redirecting...")
+            leave_reserveSpot= True
+
+    if (leave_reserveSpot == True):
+        return mat
+
+
+
 
     for user_data_document in userData.find({}):
         if (logged_in_username == user_data_document["username"]):  

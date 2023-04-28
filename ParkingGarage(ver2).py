@@ -573,7 +573,7 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
                 print ("You selected parking Slot ", a[0].upper(), spot_input2 )
                 input2 = True
         
-    print("not a number, try again")
+
 
 
 
@@ -581,14 +581,19 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
 
         if (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] == logged_in_username):
 
-            for user_data_document in userData.find({}):
-                parkingData.update_one({"_id": parkingData_document["_id"]},
+            parkingData.update_one({"_id": parkingData_document["_id"]},
                 {"$set": {"reserve_status": False}},)
-                parkingData.update_one({"_id": parkingData_document["_id"]},
+            parkingData.update_one({"_id": parkingData_document["_id"]},
                 {"$set": {"reserver_name": None}},)
+            print ("Unreserve successfully\n Redirecting...")
+            break
 
-    if (leave_reserveSpot == True):
-                return mat
-
+        elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] != logged_in_username):
+            print ("--------------------------------------------")
+            print ("You cannot leave reserve a spot that is not own by you! \n Redirecting...")
+            break
+        elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] != None):
+            print ("--------------------------------------------")
+            print ("You cannot leave reserve a spot that has not been reserved by anyone! \n Redirecting... ")
 
 main()

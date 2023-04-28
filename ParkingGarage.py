@@ -87,8 +87,7 @@ def main ():
    
   
   
-    for i in mat:
-        print('\t'.join(map(str, i)))
+
 
     for i in range(rows):
         for j in range(cols):

@@ -17,120 +17,6 @@ from  termcolor import colored
 
 
 
-
-#class definitions
-class parkingSpace:
-    def __init__(self) -> None:
-        self.occupied = False #attribute to see if it is occupied
-        self.cost = 10 #sets a default cost
-        self.occupiedName=""
-    
-    def changeOccupied(self, name): #allows each space to flag whether its occupied or not
-        self.occupied = not self.occupied
-        self.occupiedName = name
-
-    def setCost(self, newcost): #allows prices to change within each lot (and to change from default)
-        self.cost = newcost
-    
-    def getOccupied(self):
-        return self.occupied, self.occupiedName
-    
-    def getCost(self):
-        return self.cost
-
-class parkingLot: 
-    def __init__(self, lotName,floors, spacePerFloor, costPerSpace) -> None:
-        self.lotName = lotName
-        self.floors = floors
-        self.spacePerFloor = spacePerFloor
-        self.capacity = floors*spacePerFloor
-        self.originalCap = floors*spacePerFloor
-        self.reservedSpace = {} #dictionary of currently reserved spaces
-        self.lot = [] #stores parking Space objects on each floor (nested list)
-        self.netProfit = 0
-
-        for floor in range(floors): #creates a double nested list that holds values for each floor (we are assuming floors are identical)
-            floorlot = []
-            for spaces in range(spacePerFloor):
-                newSpace = parkingSpace()
-                newSpace.setCost(costPerSpace)
-                floorlot.append(newSpace)
-            self.lot.append(floorlot)
-
-    def returnLot(self):
-        return self.lot
-    
-    def incrementCapacity(self):
-        if self.capacity==self.originalCap:
-            print("Error! The lot is already empty!")
-            return False #allows for checking if function worked
-        else:
-            self.capacity+=1
-            return True
-    
-    def decrementCapacity(self):
-        if self.capacity<=0:
-            print("Error! The lot is at capacity!")
-            return False #allows for chechking if function worked
-        else:
-            self.capacity-=1
-            return True
-    
-    def getReserved(self):
-        print(self.lotName)
-        for key in self.reservedSpace:
-            if self.reservedSpace[key]==[]:
-                pass
-            else:
-                print(key,"|", self.reservedSpace[key])
-    
-    def getInfo(self):
-        print("Total money earned by this lot:",self.netProfit)
-        print("Amount of open spaces currently available:",self.capacity)
-        
-
-def reserveSpace(lot, reservedName): #pass in a parking lot object to reserve a space in
-    for floor in lot.lot:
-        for space in floor:
-            if space.occupied==False:
-                space.changeOccupied(reservedName)
-                if reservedName in lot.reservedSpace.keys():
-                    lot.reservedSpace[reservedName].append(space) #stores the reserved space in the lot under a dictionary with name as key and object as space
-                else:
-                    lot.reservedSpace[reservedName]=[space]
-                lot.netProfit += space.getCost()
-                lot.decrementCapacity()
-                return
-            else:
-                pass
-
-#empties all reservations under a specific name (must pass in a specific lot)
-def emptyAllSpace_Name(name, lot):
-    if name not in lot.reservedSpace.keys():
-        print("Name not found! Please try again.")
-    else:
-        while lot.reservedSpace[name] != []:
-            space = lot.reservedSpace[name][0]
-            # print(space,":")
-            space.changeOccupied("")
-            lot.reservedSpace[name].remove(space)
-            lot.incrementCapacity()
-        print(lot.lotName,"has been cleared of all reserved spaces under the name",name)
-
-def emptySpace_Obj(space, lot):
-    success=False
-    for key in lot.reservedSpace.keys():
-        if space in lot.reservedSpace[key]:
-            success = True
-            space.changeOccupied("")
-            lot.reservedSpace[key].remove(space)
-            lot.incrementCapacity()
-            print("Space has been removed from",key,"'s reservations.")
-            return
-    if not success:
-        print("An error occured. Please check inputs and try again!")
-
-
 #main function
 def main():
 
@@ -153,9 +39,15 @@ def main():
     userData.create_index([("balance", pymongo.ASCENDING)])
     userData.create_index([("car_plate", pymongo.ASCENDING)])
  
+    #Creating a schema
+    parkingData = db.parkingData
+    # Creating attributes for userCredentials schema
+    parkingData.create_index([("floor#", pymongo.ASCENDING)],)
+    parkingData.create_index([("spot#", pymongo.ASCENDING)])
+    parkingData.create_index([("reserve_status", pymongo.ASCENDING)])
 
 
-
+    # testing(parkingData)
 
     logged_in_username = ""
     leave_login = False
@@ -224,9 +116,9 @@ def main():
                     leave_parking_garage = True
                 case 4:    
                     #used to populate some data. 
-                    populate(db, userCredentials, userData)
+                    populate(db, userCredentials, userData, parkingData)
                 case 5:
-                    delete_existing_data(db, userCredentials, userData)
+                    delete_existing_data(db, userCredentials, userData, parkingData)
                 
             
             # if leave_login == True:
@@ -254,20 +146,16 @@ def main():
                         mat = [[0 for _ in range(cols)] for _ in range(rows)]
                     
                     
-                    
-                        for i in mat:
-                            print('\t'.join(map(str, i)))
+                        # for parkingData_document in parkingData.find({}):
+                        #     if (parkingData_document["reserve_status"] == False):
+                        #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'blue');
+                        #     else:
+                        #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'red');
+                        
+                        showGarage(mat,rows,cols, parkingData)
+                        reserveSpot(mat, parkingData, logged_in_username, userData)
+                        showGarage(mat,rows,cols, parkingData)
 
-                        for i in range(rows):
-                            for j in range(cols):
-                                mat[i][j] = colored('|_____|', 'blue')
-                            print()
-
-                        showGarage(mat,rows,cols)
-                        reserveSpot(mat)
-                        showGarage(mat,rows,cols)
-                        leavingLot(mat)
-                        showGarage(mat,rows,cols)
                     case 2: #Add Balance
                         print ("--------------------------------------------")
                         updated_balance = 0.0
@@ -288,7 +176,6 @@ def main():
 
                     case 3: #Add A Carplate
                         print ("--------------------------------------------")
-                        updated_balance = 0.0
                         carPlate_add_input = input("Please enter your new car plate to register: ")
                         for user_data_document in userData.find({}):
                             # the input car plate has been registered to the database by a different user
@@ -440,7 +327,7 @@ def print_parking_garage_menu(logged_in_username):
 
 
 
-def populate (db, userCredentials, userData):
+def populate (db, userCredentials, userData, parkingData):
 
     # inserting default data for user
     userCredentials_result = userCredentials.insert_many([
@@ -455,41 +342,123 @@ def populate (db, userCredentials, userData):
         {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": None},
         {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": "4SDE258"},
     ])
+    parkingData.create_index([("floor#", pymongo.ASCENDING)],)
+    parkingData.create_index([("spot#", pymongo.ASCENDING)])
+    parkingData.create_index([("reserve_status", pymongo.ASCENDING)])
+    parkingData_result = parkingData.insert_many( [
+        {"floor#": 0, "spot#": 0, "reserve_status": False},
+        {"floor#": 0, "spot#": 1, "reserve_status": False},
+        {"floor#": 0, "spot#": 2, "reserve_status": False},
+        {"floor#": 0, "spot#": 3, "reserve_status": True},
+        {"floor#": 0, "spot#": 4, "reserve_status": False},
+        {"floor#": 0, "spot#": 5, "reserve_status": False},
+
+        {"floor#": 1, "spot#": 0, "reserve_status": False},
+        {"floor#": 1, "spot#": 1, "reserve_status": False},
+        {"floor#": 1, "spot#": 2, "reserve_status": False},
+        {"floor#": 1, "spot#": 3, "reserve_status": False},
+        {"floor#": 1, "spot#": 4, "reserve_status": False},
+        {"floor#": 1, "spot#": 5, "reserve_status": False},
+
+        {"floor#": 2, "spot#": 0, "reserve_status": False},
+        {"floor#": 2, "spot#": 1, "reserve_status": True},
+        {"floor#": 2, "spot#": 2, "reserve_status": False},
+        {"floor#": 2, "spot#": 3, "reserve_status": False},
+        {"floor#": 2, "spot#": 4, "reserve_status": False},
+        {"floor#": 2, "spot#": 5, "reserve_status": False},
+
+
+    ])
     print ("--------------------------------------------")
     print ("Populate successfully")
 
-def delete_existing_data(db, userCredentials, userData):
+def delete_existing_data(db, userCredentials, userData, parkingData):
     # Clear all currently existing data in all table table
     userCredentials.delete_many({})
     userData.delete_many({})
+    parkingData.delete_many({})
     print ("--------------------------------------------")
     print ("Delete successfully")
 
-def showGarage(mat,r,c):
+def showGarage(mat,r,c, parkingData):
+    for parkingData_document in parkingData.find({}):
+        if (parkingData_document["reserve_status"] == False):
+            mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'blue');
+        else:
+            mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'red');
+    
     for i in range(r):
-            for j in range(c):
-                print(mat[i][j], end = " ")
-            print("\n")
+        if ( i == 0):
+            print ("Floor A")
+        elif ( i == 1):
+            print ("Floor B")
+        elif ( i == 2):
+            print ("Floor C")
+        for j in range(c):
+            print(mat[i][j], end = " ")
+        print("\n")
 
 
-def reserveSpot(mat):
-    print(" enter what floor you want. ex A3")
+def reserveSpot(mat, parkingData, logged_in_username, userData):
+    leave_reserveSpot = False
     a =[]
-    a.append((input()))
-    if(a[0]=='a'or a[0]=='a'):
-            print("first row")
-            f = 0
+    floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
+    a.append(floor_name)
+    if(a[0]=='A'or a[0]=='a'):
+            print ("--------------------------------------------")
+            print("You Selected Third floor")
+            floor_input = 0
     elif(a[0]=='B' or a[0]=='b'):
-            print("first row")
-            f = 1
+            print ("--------------------------------------------")
+            print("You Selected Second floor")
+            floor_input = 1
     elif(a[0]=='C' or a[0]=='c'):
-            print("first row")
-            f = 2
-    print("enter number of the spot you want (1-6)")
+            print ("--------------------------------------------")
+            print("You Selected First Floor")
+            floor_input = 2
 
-    spot = int(input())
 
-    mat[f][spot-1] = colored('|_____|', 'red')
+    print ("--------------------------------------------")
+    spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
+    print ("You selected parking Slot ", floor_name.upper(), floor_input+1, " and it will cost you $10.0" )
+    # mat[floor_input][spot_input-1] = colored('|_____|', 'red')
+
+
+
+
+
+
+    for user_data_document in userData.find({}):
+        if (logged_in_username == user_data_document["username"]) and (user_data_document["balance"] >= 10.0):                        
+            updated_balance = user_data_document["balance"] - 10.0
+            userData.update_one({"username": logged_in_username},
+                {"$set": {"balance": float(updated_balance)}})
+            break
+        elif ((logged_in_username == user_data_document["username"]) and (user_data_document["balance"] < 10.0)):
+            print ("--------------------------------------------")
+            print ("Insufficent fund to reserve, please add more money to your balance")
+            leave_reserveSpot = True
+            break
+    if (leave_reserveSpot == True):
+        return mat
+
+    for parkingData_document in parkingData.find({}):
+         if (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1):
+            parkingData.update_one({"_id": parkingData_document["_id"]},
+                {"$set": {"reserve_status": True}})
+            print ("--------------------------------------------")
+            print ("Reserve successfully")
+            break
+
+    for user_data_document in userData.find({}):
+        if (logged_in_username == user_data_document["username"]):  
+            print ("Your remaining balance is: $", user_data_document["balance"])
+            print ("--------------------------------------------")
+            break
+
+
+
+
 
     return mat
 
@@ -514,4 +483,5 @@ def leavingLot(mat):
     mat[f][spot-1] = colored('|_____|', 'blue')
 
     return mat
+
 main()

@@ -57,262 +57,268 @@ def main():
         if (leave_login == False):
             print_login_menu()
 
+            try:
+                my_login_choice = int(input())
 
-            my_login_choice = int(input())
 
-
-            match my_login_choice:
-                case 1:
-                    credentials_validator = False
-                    print ("--------------------------------------------")
-                    print ("Please enter your credentials")
-                    username_input = input("username: ")
-                    password_input = input("password: ")
-
-                    # going through each userCredential in mongoDB to try to find a match
-                    for userCredentials_document in userCredentials.find({}):
-                        if ((userCredentials_document["username"] == str(username_input)) & 
-                            (userCredentials_document["password"] == str(password_input))):
-                            credentials_validator = True
-                            break
-                    if (credentials_validator == False):
+                match my_login_choice:
+                    case 1:
+                        credentials_validator = False
                         print ("--------------------------------------------")
-                        print ("invalid username or password!!")
-                    else: 
-                        print ("--------------------------------------------")
-                        print ("Login Successfully!")
-                        logged_in_username = str(username_input)
-                        leave_login = True
-                        leave_parking_garage = False
+                        print ("Please enter your credentials")
+                        username_input = input("username: ")
+                        password_input = input("password: ")
 
-                case 2:
-                    print ("--------------------------------------------")
-                    print ("Please enter the fields below") 
-                    username_input = input("username: ")
-                    password_input = input("password: ") 
-                    email_input = input("email: ")
-
-                    username_validator = False
-                    email_validator = False
-                    for userCredentials_document in userCredentials.find({}):
-                        # look for any existing username or email in the database
-                        if ((userCredentials_document["username"] == str(username_input))):
-                            username_validator = True
-                        if  (userCredentials_document["email"] == str(email_input)):
-                            email_validator = True
-
-                    print ("--------------------------------------------")
-                    if (username_validator == True):
-                        print ("username has been used! Failed to signup!")
-                    if (email_validator == True):
-                        print ("email has been used! Failed to signup!")
-                    if (username_validator == False & email_validator == False):
-                        userCredentials.insert_one({"username": username_input, "password": password_input, "email": email_input})
-                        userData.insert_one( {"username": username_input, "password": password_input, "email": email_input, "balance": 0.0, "car_plate": None})
-                        print ("sign up successfully!")
-                case 3:
-                    print ("Good bye!")
-                    leave_login = True
-                    leave_parking_garage = True
-                case 4:    
-                    #used to populate some data. 
-                    populate(db, userCredentials, userData, parkingData)
-                case 5:
-                    delete_existing_data(db, userCredentials, userData, parkingData)
-                
-            
-            # if leave_login == True:
-            #     break
-            if (leave_parking_garage == True) & (leave_login == True):
-                break
-
-
-
-        # if login successful! or program is not exit, This is where the user able to login to our app
-        #  This is where we can put our parking garage functionalities (reserve, add balance, etc) 
-
-        if (leave_parking_garage == False) & (leave_login == True):
-
-            while 1:
-
-                print_parking_garage_menu(logged_in_username)    
-                my_parking_garage_choice = int(input())
-
-                match my_parking_garage_choice:
-                    case 1: #Reserve 
-                        print("1: Reserving")
-                        rows = 3
-                        cols = 6
-                        mat = [[0 for _ in range(cols)] for _ in range(rows)]
-                    
-                    
-                        # for parkingData_document in parkingData.find({}):
-                        #     if (parkingData_document["reserve_status"] == False):
-                        #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'blue');
-                        #     else:
-                        #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'red');
-                        
-                        showGarage(mat,rows,cols, parkingData)
-                        reserveSpot(mat, parkingData, logged_in_username, userData, cols)
-                        showGarage(mat,rows,cols, parkingData)
-
-                    case 2: # leave Reserve
-                        #call leave reserve function here
-                        rows = 3
-                        cols = 6
-                        mat = [[0 for _ in range(cols)] for _ in range(rows)]
-                        showGarage(mat,rows,cols, parkingData)
-                        leavingLot(mat, parkingData, logged_in_username, userData, cols)
-                        showGarage(mat,rows,cols, parkingData)
-
-
-                    case 3: #Add Balance
-                        print ("--------------------------------------------")
-                        updated_balance = 0.0
-                        ammount_add_input = float(input("Enter your amount: $"))
-
-                        for user_data_document in userData.find({}):
-                            if (logged_in_username == user_data_document["username"]):                        
-                                updated_balance = user_data_document["balance"] + float(ammount_add_input)
-                                userData.update_one({"username": logged_in_username},
-                                                     {"$set": {"balance": float(updated_balance)}})
-                                print ("Adding balance successfully!")
+                        # going through each userCredential in mongoDB to try to find a match
+                        for userCredentials_document in userCredentials.find({}):
+                            if ((userCredentials_document["username"] == str(username_input)) & 
+                                (userCredentials_document["password"] == str(password_input))):
+                                credentials_validator = True
                                 break
-
-                        for user_data_document in userData.find({}):
-                            if (logged_in_username == user_data_document["username"]):  
-                                print ("Your new balance is: $", user_data_document["balance"])
-                                break
-
-                    case 4: #Add A Carplate
-                        print ("--------------------------------------------")
-                        carPlate_add_input = input("Please enter your new car plate to register: ")
-                        for user_data_document in userData.find({}):
-                            # the input car plate has been registered to the database by a different user
-                            if (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username != user_data_document["username"]):
-                                print ("--------------------------------------------")
-                                print ("Failed to register!")                               
-                                print ("This car plate has been registered to a different user")
-                                break
-                            # the input carplate has been registered to the database by this user
-                            elif (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username == user_data_document["username"]):
-                                print ("--------------------------------------------")
-                                print ("Failed to register!") 
-                                print ("This car plate has been registered to your account")
-                                break
-
-                            elif (logged_in_username == user_data_document["username"]):
-                                userData.update_one({"username": logged_in_username},
-                                                     {"$set": {"car_plate": carPlate_add_input}})
-                                print ("Adding car plate successfully!")                     
-                                break
-
-                    case 5: #See Account details
-                        for user_data_document in userData.find({}):
-                            if (logged_in_username == user_data_document["username"]):
-                                print ("--------------------------------------------")
-                                print ("Your username is: ", user_data_document["username"])
-                                print ("Your password is: ", user_data_document["password"])
-                                print ("Your registered email is: ", user_data_document["email"])
-                                print ("Your current balance is: $", user_data_document["balance"])
-                                print ("Your registered carplate is: ", user_data_document["car_plate"])
-                                user_owned_parking_spot = []
-                                for parkingData_document in parkingData.find({}):
-                                    if (parkingData_document["reserver_name"] == logged_in_username):
-                                        user_owned_parking_spot.append(parkingData_document["_id"])
-                                print ("Your currently reserved Spots are: ")
-                                for i in user_owned_parking_spot:
-                                    print (i)
-                                break
-                    case 6: #delete account
-                        print ("--------------------------------------------")
-                        delete_input = input("Are you sure you want to delete this account? Y/N: ")
-                        exit_delete_account = False
-                        while 1:
-
-                            if (delete_input == "y") or (delete_input == "Y"):
-                                #delete account
-                                for userData_document in userData.find({}):
-                                    if (userData_document["username"] == logged_in_username):
-                                        db.userData.delete_one({"username": userData_document["username"]})
-                                        db.userCredentials.delete_one({"username": userData_document["username"]})
-                                        print ("--------------------------------------------")
-                                        print ("Deletion successfully!")
-                                        exit_delete_account = True
-                                        logged_in_username = ""
-                                        leave_login = False
-                                        leave_parking_garage = True
-                                        print ("Redirecting back to signin/signup menu...")
-                                        break
-                                pass
-                            elif (delete_input == "n") or (delete_input == "N"):
-                                #redirect to parking garage menu
-                                exit_delete_account = True
-                                print ("--------------------------------------------")
-                                print ("Redirecting back to parking garage menu...")
-                                pass
-                            else: 
-                                print ("invalid input")
-                                delete_input = input("Are you sure you want to delete this account? Y/N: ")
-
-                            if (exit_delete_account == True):
-                                break
-                    
-                    case 7:# change password
-                        print ("--------------------------------------------")
-                        old_pass_input = input("Please enter your current password or exit: ")
-
-                        exit_pass_change = False
-                        while 1: 
-                            if ( old_pass_input == "exit"):
-                                print ("--------------------------------------------")
-                                print ("Redirecting to parking garage menu....")
-                                break
-                            for userData_document in userData.find({}):
-                                if (userData_document["password"] == old_pass_input):
-                                    print ("--------------------------------------------")
-                                    print ("Success")
-                                    new_pass_input = input("Please enter your new password: ")
-                                    userData.update_one({"username": logged_in_username},
-                                                     {"$set": {"password": new_pass_input}})
-                                    for userCredentials_document in userCredentials.find({}):
-                                        userCredentials.update_one({"username": logged_in_username},
-                                                     {"$set": {"password": new_pass_input}})
-                                        break
-                                    print ("Password changed")
-                                    exit_pass_change = True
-                                    print ("--------------------------------------------")
-                                    print ("Redirecting to parking garage menu....")
-                                    break
-                            if (exit_pass_change == True) :
-                                break 
+                        if (credentials_validator == False):
                             print ("--------------------------------------------")
-                            print ("invalid password")
-                            old_pass_input = input("Please enter your current password or exit: ")
+                            print ("invalid username or password!!")
+                        else: 
+                            print ("--------------------------------------------")
+                            print ("Login Successfully!")
+                            logged_in_username = str(username_input)
+                            leave_login = True
+                            leave_parking_garage = False
 
-                                    
-
-
-
-
-
-                    case 8: #Log out
+                    case 2:
                         print ("--------------------------------------------")
-                        print ("logging out...")
-                        logged_in_username = ""
-                        leave_login = False
-                        leave_parking_garage = True
+                        print ("Please enter the fields below") 
+                        username_input = input("username: ")
+                        password_input = input("password: ") 
+                        email_input = input("email: ")
 
-                    case 9: # exit program
-                        print ("goodbye!")
+                        username_validator = False
+                        email_validator = False
+                        for userCredentials_document in userCredentials.find({}):
+                            # look for any existing username or email in the database
+                            if ((userCredentials_document["username"] == str(username_input))):
+                                username_validator = True
+                            if  (userCredentials_document["email"] == str(email_input)):
+                                email_validator = True
+
+                        print ("--------------------------------------------")
+                        if (username_validator == True):
+                            print ("username has been used! Failed to signup!")
+                        if (email_validator == True):
+                            print ("email has been used! Failed to signup!")
+                        if (username_validator == False & email_validator == False):
+                            userCredentials.insert_one({"username": username_input, "password": password_input, "email": email_input})
+                            userData.insert_one( {"username": username_input, "password": password_input, "email": email_input, "balance": 0.0, "car_plate": None})
+                            print ("sign up successfully!")
+                    case 3:
+                        print ("Good bye!")
                         leave_login = True
                         leave_parking_garage = True
-
+                    case 4:    
+                        #used to populate some data. 
+                        populate(db, userCredentials, userData, parkingData)
+                    case 5:
+                        delete_existing_data(db, userCredentials, userData, parkingData)
+                    
                 
-                if leave_parking_garage == True:
+                # if leave_login == True:
+                #     break
+                if (leave_parking_garage == True) & (leave_login == True):
                     break
-            if (leave_parking_garage == True) & (leave_login == True):
-                break
+
+            except:
+                print("not a valid entry, try again")
+
+            # if login successful! or program is not exit, This is where the user able to login to our app
+            #  This is where we can put our parking garage functionalities (reserve, add balance, etc) 
+
+            if (leave_parking_garage == False) & (leave_login == True):
+
+                while 1:
+                    try:
+                        print_parking_garage_menu(logged_in_username)    
+                        my_parking_garage_choice = int(input())
+
+                        match my_parking_garage_choice:
+                            case 1: #Reserve 
+                                print("1: Reserving")
+                                rows = 3
+                                cols = 6
+                                mat = [[0 for _ in range(cols)] for _ in range(rows)]
+                            
+                            
+                                # for parkingData_document in parkingData.find({}):
+                                #     if (parkingData_document["reserve_status"] == False):
+                                #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'blue');
+                                #     else:
+                                #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'red');
+                                
+                                showGarage(mat,rows,cols, parkingData)
+                                reserveSpot(mat, parkingData, logged_in_username, userData, cols)
+                                showGarage(mat,rows,cols, parkingData)
+
+                            case 2: # leave Reserve
+                                #call leave reserve function here
+                                rows = 3
+                                cols = 6
+                                mat = [[0 for _ in range(cols)] for _ in range(rows)]
+                                showGarage(mat,rows,cols, parkingData)
+                                leavingLot(mat, parkingData, logged_in_username, userData, cols)
+                                showGarage(mat,rows,cols, parkingData)
+
+
+                            case 3: #Add Balance
+                                print ("--------------------------------------------")
+                                updated_balance = 0.0
+                                ammount_add_input = float(input("Enter your amount: $"))
+
+                                for user_data_document in userData.find({}):
+                                    if (logged_in_username == user_data_document["username"]):                        
+                                        updated_balance = user_data_document["balance"] + float(ammount_add_input)
+                                        userData.update_one({"username": logged_in_username},
+                                                            {"$set": {"balance": float(updated_balance)}})
+                                        print ("Adding balance successfully!")
+                                        break
+
+                                for user_data_document in userData.find({}):
+                                    if (logged_in_username == user_data_document["username"]):  
+                                        print ("Your new balance is: $", user_data_document["balance"])
+                                        break
+
+                            case 4: #Add A Carplate
+                                print ("--------------------------------------------")
+                                carPlate_add_input = input("Please enter your new car plate to register: ")
+                                for user_data_document in userData.find({}):
+                                    # the input car plate has been registered to the database by a different user
+                                    if (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username != user_data_document["username"]):
+                                        print ("--------------------------------------------")
+                                        print ("Failed to register!")                               
+                                        print ("This car plate has been registered to a different user")
+                                        break
+                                    # the input carplate has been registered to the database by this user
+                                    elif (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username == user_data_document["username"]):
+                                        print ("--------------------------------------------")
+                                        print ("Failed to register!") 
+                                        print ("This car plate has been registered to your account")
+                                        break
+
+                                    elif (logged_in_username == user_data_document["username"]):
+                                        userData.update_one({"username": logged_in_username},
+                                                            {"$set": {"car_plate": carPlate_add_input}})
+                                        print ("Adding car plate successfully!")                     
+                                        break
+
+                            case 5: #See Account details
+                                for user_data_document in userData.find({}):
+                                    if (logged_in_username == user_data_document["username"]):
+                                        print ("--------------------------------------------")
+                                        print ("Your username is: ", user_data_document["username"])
+                                        print ("Your password is: ", user_data_document["password"])
+                                        print ("Your registered email is: ", user_data_document["email"])
+                                        print ("Your current balance is: $", user_data_document["balance"])
+                                        print ("Your registered carplate is: ", user_data_document["car_plate"])
+                                        user_owned_parking_spot = []
+                                        for parkingData_document in parkingData.find({}):
+                                            if (parkingData_document["reserver_name"] == logged_in_username):
+                                                user_owned_parking_spot.append(parkingData_document["_id"])
+                                        print ("Your currently reserved Spots are: ")
+                                        for i in user_owned_parking_spot:
+                                            print (i)
+                                        break
+                            case 6: #delete account
+                                print ("--------------------------------------------")
+                                delete_input = input("Are you sure you want to delete this account? Y/N: ")
+                                exit_delete_account = False
+                                while 1:
+
+                                    if (delete_input == "y") or (delete_input == "Y"):
+                                        #delete account
+                                        for userData_document in userData.find({}):
+                                            if (userData_document["username"] == logged_in_username):
+                                                db.userData.delete_one({"username": userData_document["username"]})
+                                                db.userCredentials.delete_one({"username": userData_document["username"]})
+                                                print ("--------------------------------------------")
+                                                print ("Deletion successfully!")
+                                                exit_delete_account = True
+                                                logged_in_username = ""
+                                                leave_login = False
+                                                leave_parking_garage = True
+                                                print ("Redirecting back to signin/signup menu...")
+                                                break
+                                        pass
+                                    elif (delete_input == "n") or (delete_input == "N"):
+                                        #redirect to parking garage menu
+                                        exit_delete_account = True
+                                        print ("--------------------------------------------")
+                                        print ("Redirecting back to parking garage menu...")
+                                        pass
+                                    else: 
+                                        print ("invalid input")
+                                        delete_input = input("Are you sure you want to delete this account? Y/N: ")
+
+                                    if (exit_delete_account == True):
+                                        break
+                            
+                            case 7:# change password
+                                print ("--------------------------------------------")
+                                old_pass_input = input("Please enter your current password or exit: ")
+
+                                exit_pass_change = False
+                                while 1: 
+                                    if ( old_pass_input == "exit"):
+                                        print ("--------------------------------------------")
+                                        print ("Redirecting to parking garage menu....")
+                                        break
+                                    for userData_document in userData.find({}):
+                                        if (userData_document["password"] == old_pass_input):
+                                            print ("--------------------------------------------")
+                                            print ("Success")
+                                            new_pass_input = input("Please enter your new password: ")
+                                            userData.update_one({"username": logged_in_username},
+                                                            {"$set": {"password": new_pass_input}})
+                                            for userCredentials_document in userCredentials.find({}):
+                                                userCredentials.update_one({"username": logged_in_username},
+                                                            {"$set": {"password": new_pass_input}})
+                                                break
+                                            print ("Password changed")
+                                            exit_pass_change = True
+                                            print ("--------------------------------------------")
+                                            print ("Redirecting to parking garage menu....")
+                                            break
+                                    if (exit_pass_change == True) :
+                                        break 
+                                    print ("--------------------------------------------")
+                                    print ("invalid password")
+                                    old_pass_input = input("Please enter your current password or exit: ")
+
+                                            
+
+
+
+
+
+                            case 8: #Log out
+                                print ("--------------------------------------------")
+                                print ("logging out...")
+                                logged_in_username = ""
+                                leave_login = False
+                                leave_parking_garage = True
+
+                            case 9: # exit program
+                                print ("goodbye!")
+                                leave_login = True
+                                leave_parking_garage = True
+
+                    except:
+                        print("invalid entry, try again" ) 
+                        
+                    if leave_parking_garage == True:
+                        break
+                    
+                if (leave_parking_garage == True) & (leave_login == True):
+                    break
+                
+        
 def print_login_menu():
     print ("--------------------------------------------")
     print ("Welcome to the Automated parking garage. Please login or signup to use our program!")

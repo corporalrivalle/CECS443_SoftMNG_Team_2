@@ -10,7 +10,7 @@ from pprint import pprint
 from Utilities import Utilities
 from  termcolor import colored
 import re
-
+import pyfiglet
 
 
 
@@ -49,6 +49,14 @@ def main():
     parkingData.create_index([("reserver_username", pymongo.ASCENDING)])
 
     # testing(parkingData)
+    ascii_banner = pyfiglet.figlet_format("Hello!!")
+    print(ascii_banner)
+
+    ascii_banner = pyfiglet.figlet_format("Welcome To The")
+    print(ascii_banner)
+
+    ascii_banner = pyfiglet.figlet_format("Automated Parking Garage!!")
+    print(ascii_banner)
 
     logged_in_username = ""
     leave_login = False

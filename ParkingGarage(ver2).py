@@ -9,6 +9,7 @@ from pymongo import MongoClient
 from pprint import pprint
 from Utilities import Utilities
 from  termcolor import colored
+import re
 
 
 
@@ -90,9 +91,20 @@ def main():
                     case 2:
                         print ("--------------------------------------------")
                         print ("Please enter the fields below") 
+                        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
                         username_input = input("username: ")
                         password_input = input("password: ") 
-                        email_input = input("email: ")
+                        while(1):
+                           # try:
+                                email_input = input("email: ")
+                                if(re.fullmatch(regex,email_input)):
+                                    break
+                                else:
+                                    print("invalid email, please try again")
+
+                           # except:
+                            #    print("invalid email format, try again")
+                                
 
                         username_validator = False
                         email_validator = False

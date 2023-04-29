@@ -153,7 +153,7 @@ def main():
                     try:
                         print_parking_garage_menu(logged_in_username)    
                         my_parking_garage_choice = int(input())
-                        if (my_parking_garage_choice < 1) or (my_parking_garage_choice > 9):
+                        if (my_parking_garage_choice < 1) or (my_parking_garage_choice > 10):
                             print ("--------------------------------------------")
                             print("Not a valid entry, try again")
                         match my_parking_garage_choice:
@@ -219,7 +219,42 @@ def main():
                                         print ("Adding car plate successfully!")                     
                                         break
 
-                            case 5: #See Account details
+                            case 5: #Remove  Registered Carplate
+                                leave_remove_registered_carplate = False
+                                for userData_document in userData.find({}):
+                                    if (userData_document["username"] == logged_in_username):
+                                        print ("--------------------------------------------")
+                                        print ("The current registered car plate to your account is:", userData_document["car_plate"])
+                                        break
+                                while 1:     
+                                    remove_choice = input("Are you sure you want to remove this car plate? Y/N --> ")
+
+                                    if (remove_choice.upper() == "Y" ):
+                                        # Remove carplate
+                                        for userData_document in userData.find({}):
+                                            if (userData_document["username"] == logged_in_username):
+                                                userData.update_one({"username": logged_in_username},
+                                                            {"$set": {"car_plate": None}})
+                                                print ("--------------------------------------------")
+                                                print("Removing successfully")
+                                                leave_remove_registered_carplate = True
+                                                break
+                                        if (leave_remove_registered_carplate == True):
+                                            break
+                                        #exit case 5
+                                    elif (remove_choice.upper() == "N" ):
+                                        print ("Redirecting...")
+                                        break
+                                        #exit case 5
+                                        pass
+                                    else:
+                                        print ("--------------------------------------------")
+                                        print ("invalid choice")
+                                        #invalid input
+                                        pass
+
+
+                            case 6: #See Account details
                                 for user_data_document in userData.find({}):
                                     if (logged_in_username == user_data_document["username"]):
                                         print ("--------------------------------------------")
@@ -247,7 +282,7 @@ def main():
                                                         print ("C", parkingData_document["spot#"]+1)
                                                         break
                                         break
-                            case 6: #delete account
+                            case 7: #delete account
                                 print ("--------------------------------------------")
                                 delete_input = input("Are you sure you want to delete this account? Y/N: ")
                                 exit_delete_account = False
@@ -281,7 +316,7 @@ def main():
                                     if (exit_delete_account == True):
                                         break
                             
-                            case 7:# change password
+                            case 8:# change password
                                 print ("--------------------------------------------")
                                 old_pass_input = input("Please enter your current password or exit: ")
 
@@ -319,14 +354,14 @@ def main():
 
 
 
-                            case 8: #Log out
+                            case 9: #Log out
                                 print ("--------------------------------------------")
                                 print ("logging out...")
                                 logged_in_username = ""
                                 leave_login = False
                                 leave_parking_garage = True
 
-                            case 9: # exit program
+                            case 10: # exit program
                                 print ("--------------------------------------------")
                                 print ("goodbye!")
                                 leave_login = True
@@ -363,11 +398,12 @@ def print_parking_garage_menu(logged_in_username):
     print("2: Leave Reserve")
     print("3: Add Balance")
     print("4: Add/Change A Carplate")
-    print("5: See Your Account Details")
-    print("6: Delete Account")
-    print("7: Change Password")    
-    print("8: Log Out")
-    print("9: Exit Program")
+    print("5: Remove Registered Carplate")
+    print("6: See Your Account Details")
+    print("7: Delete Account")
+    print("8: Change Password")    
+    print("9: Log Out")
+    print("10: Exit Program")
 
 
 # delete account? change email?  change password? remove carplate?

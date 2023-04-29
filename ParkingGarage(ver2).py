@@ -59,7 +59,9 @@ def main():
 
             try:
                 my_login_choice = int(input())
-
+                if (my_login_choice < 1) or (my_login_choice > 5):
+                    print ("--------------------------------------------")
+                    print("Not a valid entry, try again")
 
                 match my_login_choice:
                     case 1:
@@ -120,17 +122,18 @@ def main():
                     case 5:
                         delete_existing_data(db, userCredentials, userData, parkingData)
                     
-                
+
                 # if leave_login == True:
                 #     break
                 if (leave_parking_garage == True) & (leave_login == True):
                     break
 
             except:
-                print("not a valid entry, try again")
+                print ("--------------------------------------------")
+                print("Not a valid entry, try again")
 
             # if login successful! or program is not exit, This is where the user able to login to our app
-            #  This is where we can put our parking garage functionalities (reserve, add balance, etc) 
+            #  This is where we can put our parking garage functionalities (reserve, unreserve, add balance, etc) 
 
             if (leave_parking_garage == False) & (leave_login == True):
 
@@ -138,30 +141,26 @@ def main():
                     try:
                         print_parking_garage_menu(logged_in_username)    
                         my_parking_garage_choice = int(input())
-
+                        if (my_parking_garage_choice < 1) or (my_parking_garage_choice > 9):
+                            print ("--------------------------------------------")
+                            print("Not a valid entry, try again")
                         match my_parking_garage_choice:
                             case 1: #Reserve 
-                                print("1: Reserving")
                                 rows = 3
                                 cols = 6
                                 mat = [[0 for _ in range(cols)] for _ in range(rows)]
                             
-                            
-                                # for parkingData_document in parkingData.find({}):
-                                #     if (parkingData_document["reserve_status"] == False):
-                                #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'blue');
-                                #     else:
-                                #         mat[parkingData_document["floor#"]] [parkingData_document["spot#"]] = colored('|_____|', 'red');
-                                
-                                showGarage(mat,rows,cols, parkingData)
-                                reserveSpot(mat, parkingData, logged_in_username, userData, cols)
-                                showGarage(mat,rows,cols, parkingData)
+                                print ("--------------------------------------------")                           
+                                # showGarage(mat,rows,cols, parkingData)
+                                reserveSpot(mat, parkingData, logged_in_username, userData, rows, cols)
+                                # showGarage(mat,rows,cols, parkingData)
 
                             case 2: # leave Reserve
-                                #call leave reserve function here
                                 rows = 3
                                 cols = 6
                                 mat = [[0 for _ in range(cols)] for _ in range(rows)]
+
+                                print ("--------------------------------------------")
                                 showGarage(mat,rows,cols, parkingData)
                                 leavingLot(mat, parkingData, logged_in_username, userData, cols)
                                 showGarage(mat,rows,cols, parkingData)
@@ -192,13 +191,13 @@ def main():
                                     # the input car plate has been registered to the database by a different user
                                     if (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username != user_data_document["username"]):
                                         print ("--------------------------------------------")
-                                        print ("Failed to register!")                               
+                                        print ("Failed to register car plate!")                               
                                         print ("This car plate has been registered to a different user")
                                         break
                                     # the input carplate has been registered to the database by this user
                                     elif (carPlate_add_input == user_data_document ["car_plate"]) & (logged_in_username == user_data_document["username"]):
                                         print ("--------------------------------------------")
-                                        print ("Failed to register!") 
+                                        print ("Failed to register car plate!") 
                                         print ("This car plate has been registered to your account")
                                         break
 
@@ -217,13 +216,24 @@ def main():
                                         print ("Your registered email is: ", user_data_document["email"])
                                         print ("Your current balance is: $", user_data_document["balance"])
                                         print ("Your registered carplate is: ", user_data_document["car_plate"])
-                                        user_owned_parking_spot = []
+                                        user_owned_parking_spot_id = []
                                         for parkingData_document in parkingData.find({}):
                                             if (parkingData_document["reserver_name"] == logged_in_username):
-                                                user_owned_parking_spot.append(parkingData_document["_id"])
+                                                user_owned_parking_spot_id.append(parkingData_document["_id"])
                                         print ("Your currently reserved Spots are: ")
-                                        for i in user_owned_parking_spot:
-                                            print (i)
+
+                                        for id in user_owned_parking_spot_id:
+                                            for parkingData_document in parkingData.find({}):
+                                                if (parkingData_document["_id"] == id):
+                                                    if (parkingData_document["floor#"] == 0):
+                                                        print ("A", parkingData_document["spot#"]+1)
+                                                        break
+                                                    elif (parkingData_document["floor#"] == 1):
+                                                        print ("B", parkingData_document["spot#"]+1)
+                                                        break
+                                                    elif (parkingData_document["floor#"] == 2):
+                                                        print ("C", parkingData_document["spot#"]+1)
+                                                        break
                                         break
                             case 6: #delete account
                                 print ("--------------------------------------------")
@@ -305,15 +315,17 @@ def main():
                                 leave_parking_garage = True
 
                             case 9: # exit program
+                                print ("--------------------------------------------")
                                 print ("goodbye!")
                                 leave_login = True
                                 leave_parking_garage = True
-
+                        if leave_parking_garage == True:
+                            break
                     except:
-                        print("invalid entry, try again" ) 
+                        print ("--------------------------------------------")
+                        print("Not a valid entry, try again" ) 
                         
-                    if leave_parking_garage == True:
-                        break
+
                     
                 if (leave_parking_garage == True) & (leave_login == True):
                     break
@@ -361,9 +373,9 @@ def populate (db, userCredentials, userData, parkingData):
     ])
 
     userData_result = userData.insert_many( [
-        {"username": "user1", "password": "passw1", "email": "user.01@gmail.com", "balance": 10.0, "car_plate": None},
-        {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": None},
-        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": "4SDE258"},
+        {"username": "user1", "password": "passw1", "email": "user.01@gmail.com", "balance": 10.0, "car_plate": "5EGC547"},
+        {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": "4SDE258"},
+        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": None},
     ])
 
     parkingData_result = parkingData.insert_many( [
@@ -420,124 +432,130 @@ def showGarage(mat,r,c, parkingData):
         print("\n")
 
 
-def reserveSpot(mat, parkingData, logged_in_username, userData, cols):
+def reserveSpot(mat, parkingData, logged_in_username, userData, rows, cols):
 
-    leave_reserveSpot = False
-    a =[]
-    input1 = False
-    input2 = False
-    while(input1 == False):
-        floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
-        if (floor_name.upper() == 'A')  or (floor_name.upper() == 'B')  or (floor_name.upper() == 'C'):
-            a.append(floor_name)
-            if(a[0]=='A'or a[0]=='a'):
-                    print ("--------------------------------------------")
-                    print("You Selected A floor")
-                    floor_input = 0
-                    input1 = True
-            elif(a[0]=='B' or a[0]=='b'):
-                    print ("--------------------------------------------")
-                    print("You Selected B floor")
-                    floor_input = 1
-                    input1=True
-            elif(a[0]=='C' or a[0]=='c'):
-                    print ("--------------------------------------------")
-                    print("You Selected C Floor")
-                    floor_input = 2
-                    input1=True
-        else: 
-            print ("invalid input")
+    for userData_document in userData.find({}):
+        if (userData_document ["username"] == logged_in_username):
+            if (userData_document["car_plate"] != None):
+                showGarage(mat, rows,cols , parkingData)
+                leave_reserveSpot = False
+                a =[]
+                input1 = False
+                input2 = False
+                while(input1 == False):
+                    floor_name = input("Please enter what floor you want. ex A, B or C  --> ")
+                    if (floor_name.upper() == 'A')  or (floor_name.upper() == 'B')  or (floor_name.upper() == 'C'):
+                        a.append(floor_name)
+                        if(a[0]=='A'or a[0]=='a'):
+                                print ("--------------------------------------------")
+                                print("You Selected A floor")
+                                floor_input = 0
+                                input1 = True
+                        elif(a[0]=='B' or a[0]=='b'):
+                                print ("--------------------------------------------")
+                                print("You Selected B floor")
+                                floor_input = 1
+                                input1=True
+                        elif(a[0]=='C' or a[0]=='c'):
+                                print ("--------------------------------------------")
+                                print("You Selected C Floor")
+                                floor_input = 2
+                                input1=True
+                    else: 
+                        print ("invalid input")
 
 
 
 
-    print ("--------------------------------------------")
-    while(input2 == False):
-        
-        try:
-            spot_input=[]
-            spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
-            if(spot_input > cols-1 or spot_input <1 ):
-                print("invalid spot number, please try again")
+                print ("--------------------------------------------")
+                while(input2 == False):
+                    
+                    try:
+                        spot_input=[]
+                        spot_input = int(input("Please enter spot number you want to reserve (1-6) --> "))
+                        if(spot_input > cols or spot_input <1 ):
+                            print("invalid spot number, please try again")
+                        else:
+                            print ("You selected parking Slot ", floor_name.upper(), spot_input )
+                            input2 = True
+                    except:
+                        print("not a number, try again")
+
+
+
+
+
+
+                for parkingData_document in parkingData.find({}):
+                    
+                    if (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == None):
+
+                        for user_data_document in userData.find({}):
+                            if (logged_in_username == user_data_document["username"]) and (user_data_document["balance"] >= 10.0):                        
+                                updated_balance = user_data_document["balance"] - 10.0
+                                userData.update_one({"username": logged_in_username},
+                                    {"$set": {"balance": float(updated_balance)}})
+                                parkingData.update_one({"_id": parkingData_document["_id"]},
+                                    {"$set": {"reserve_status": True}},)
+                                parkingData.update_one({"_id": parkingData_document["_id"]},
+                                    {"$set": {"reserver_name": logged_in_username}},)
+                                print ("--------------------------------------------")
+                                print ("The selected parking Slot will cost $10.0...")
+                                break
+
+                            elif ((logged_in_username == user_data_document["username"]) and (user_data_document["balance"] < 10.0)):
+                                print ("--------------------------------------------")
+                                print ("Insufficent fund to reserve, please add more money to your balance")
+                                print ("Redirecting...")
+                                leave_reserveSpot = True
+                                break
+                        if (leave_reserveSpot == True):
+                            return mat
+
+
+                        print ("--------------------------------------------")
+                        print ("Reserve successfully")
+                        break
+                    elif (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == logged_in_username):
+                        print ("--------------------------------------------")
+                        print ("This current parking spot has been reserved by you")
+                        print ("Redirecting...")
+                        leave_reserveSpot = True
+                    elif (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] != logged_in_username):
+                        print ("--------------------------------------------")
+                        print ("This current parking spot has been reserved by someone")
+                        print ("Redirecting...")
+                        leave_reserveSpot= True
+
+                if (leave_reserveSpot == True):
+                    return mat
+
+
+
+
+                for user_data_document in userData.find({}):
+                    if (logged_in_username == user_data_document["username"]):  
+                        print ("Your remaining balance is: $", user_data_document["balance"])
+                        print ("--------------------------------------------")
+                        break
+
+                showGarage(mat, rows,cols , parkingData)
             else:
-                print ("You selected parking Slot ", floor_name.upper(), spot_input )
-                input2 = True
-        except:
-             print("not a number, try again")
-
-
-
-
-
-
-    for parkingData_document in parkingData.find({}):
-         
-         if (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == None):
-
-            for user_data_document in userData.find({}):
-                if (logged_in_username == user_data_document["username"]) and (user_data_document["balance"] >= 10.0):                        
-                    updated_balance = user_data_document["balance"] - 10.0
-                    userData.update_one({"username": logged_in_username},
-                        {"$set": {"balance": float(updated_balance)}})
-                    parkingData.update_one({"_id": parkingData_document["_id"]},
-                        {"$set": {"reserve_status": True}},)
-                    parkingData.update_one({"_id": parkingData_document["_id"]},
-                        {"$set": {"reserver_name": logged_in_username}},)
-                    print ("--------------------------------------------")
-                    print ("The selected parking Slot will cost $10.0...")
-                    break
-
-                elif ((logged_in_username == user_data_document["username"]) and (user_data_document["balance"] < 10.0)):
-                    print ("--------------------------------------------")
-                    print ("Insufficent fund to reserve, please add more money to your balance")
-                    print ("Redirecting...")
-                    leave_reserveSpot = True
-                    break
-            if (leave_reserveSpot == True):
-                return mat
-
-
-            print ("--------------------------------------------")
-            print ("Reserve successfully")
-            break
-         elif (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == logged_in_username):
-            print ("--------------------------------------------")
-            print ("This current parking spot has been reserved by you")
-            print ("Redirecting...")
-            leave_reserveSpot = True
-         elif (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] != logged_in_username):
-            print ("--------------------------------------------")
-            print ("This current parking spot has been reserved by someone")
-            print ("Redirecting...")
-            leave_reserveSpot= True
-
-    if (leave_reserveSpot == True):
-        return mat
-
-
-
-
-    for user_data_document in userData.find({}):
-        if (logged_in_username == user_data_document["username"]):  
-            print ("Your remaining balance is: $", user_data_document["balance"])
-            print ("--------------------------------------------")
-            break
-
-
-
+                print ("--------------------------------------------")
+                print ("Your account does not have a car plate registered yet!\nPlease register a car plate to be able to reserve\n Redirecting...")
+                break
 
 
     return mat
 
 def leavingLot(mat, parkingData, logged_in_username, userData, cols):
-    print(" You are now leaving the parking structure")
-    print("please enter your floor number")
-    leave_reserveSpot = True
+
     a =[]
     input1 = False
     input2 = False
     while(input1 == False):
         floor_name = input("Please enter what floor you are leaving. ex A, B or C  --> ")
+
         if (floor_name.upper() == 'A')  or (floor_name.upper() == 'B')  or (floor_name.upper() == 'C'):
             a.append(floor_name)
             if(a[0]=='A'or a[0]=='a'):
@@ -555,6 +573,7 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
                     print("You Selected C Floor")
                     floor_name = 2
                     input1=True
+
         else: 
             print ("invalid input")
 
@@ -567,7 +586,7 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
         
             spot_input2=[]
             spot_input2 = int(input("Please enter spot number you want to leave (1-6) --> "))
-            if(spot_input2 > cols-1 or spot_input2 <1 ):
+            if(spot_input2 > cols or spot_input2 <1 ):
                 print("invalid spot number, please try again")
             else:
                 print ("You selected parking Slot ", a[0].upper(), spot_input2 )
@@ -585,15 +604,21 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
                 {"$set": {"reserve_status": False}},)
             parkingData.update_one({"_id": parkingData_document["_id"]},
                 {"$set": {"reserver_name": None}},)
+            print ("--------------------------------------------")
             print ("Unreserve successfully\n Redirecting...")
+            print ("--------------------------------------------")
             break
 
-        elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] != logged_in_username):
+        elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] != logged_in_username) and (parkingData_document["reserve_status"] == True) and (parkingData_document["reserver_name"] != None):
             print ("--------------------------------------------")
             print ("You cannot leave reserve a spot that is not own by you! \n Redirecting...")
+            print ("--------------------------------------------")
             break
-        elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] != None):
+
+        elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] == None) and (parkingData_document["reserve_status"] == False):
             print ("--------------------------------------------")
             print ("You cannot leave reserve a spot that has not been reserved by anyone! \n Redirecting... ")
+            print ("--------------------------------------------")
+            break
 
 main()

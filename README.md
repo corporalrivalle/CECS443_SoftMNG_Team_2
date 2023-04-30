@@ -32,6 +32,6 @@ ParkingGarage(ver2).py and Utilities.py are the files written by Dat Pham
 
 # How it works:
 
-The Parking Garage is an automated system designed to
+The Parking Garage is an automated system designed to allow drivers(users) to access the parking structure without the need for human supervision. The garage allows users to pick what floor and spot number they want to use. the system will take note of what spot is reserved by assigning the users information to that spot number. The system takes into account the status of a parking spot on any floor when someone makes a reservation. if a spot is available, the spot is highlighted blue/green(for electric cars). if A spot is already reserved or in ue then the spot is highlighted red and the user cannot reserve that spot. 
 
 

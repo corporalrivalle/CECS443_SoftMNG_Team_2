@@ -11,6 +11,7 @@ from Utilities import Utilities
 from  termcolor import colored
 import re
 import pyfiglet
+from datetime import datetime
 
 
 
@@ -47,6 +48,7 @@ def main():
     parkingData.create_index([("spot#", pymongo.ASCENDING)])
     parkingData.create_index([("reserve_status", pymongo.ASCENDING)])
     parkingData.create_index([("reserver_username", pymongo.ASCENDING)])
+    parkingData.create_index([("timestamp", pymongo.ASCENDING)])
 
     # testing(parkingData)
     ascii_banner = pyfiglet.figlet_format("Hello!!")
@@ -57,6 +59,8 @@ def main():
 
     ascii_banner = pyfiglet.figlet_format("Automated Parking Garage!!")
     print(ascii_banner)
+
+
 
     logged_in_username = ""
     leave_login = False
@@ -435,51 +439,51 @@ def populate (db, userCredentials, userData, parkingData):
     ])
 
     parkingData_result = parkingData.insert_many( [
-        {"floor#": 0, "spot#": 0, "reserve_status": False, "reserver_name": None},
-        {"floor#": 0, "spot#": 1, "reserve_status": False, "reserver_name": None},
-        {"floor#": 0, "spot#": 2, "reserve_status": False, "reserver_name": None},
-        {"floor#": 0, "spot#": 3, "reserve_status": True, "reserver_name": "user2"},
-        {"floor#": 0, "spot#": 4, "reserve_status": False, "reserver_name": None},
-        {"floor#": 0, "spot#": 5, "reserve_status": False, "reserver_name": None},
+        {"floor#": 0, "spot#": 0, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 0, "spot#": 1, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 0, "spot#": 2, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 0, "spot#": 3, "reserve_status": True, "reserver_name": "user2", "timestamp": datetime.strptime("2023-04-29 12:00:00", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 0, "spot#": 4, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 0, "spot#": 5, "reserve_status": False, "reserver_name": None, "timestamp": None},
+#(datetime.now()).strftime("%Y-%m-%d %H:%M:%S")
+        {"floor#": 1, "spot#": 0, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 1, "spot#": 1, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 1, "spot#": 2, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 1, "spot#": 3, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 1, "spot#": 4, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 1, "spot#": 5, "reserve_status": False, "reserver_name": None, "timestamp": None},
 
-        {"floor#": 1, "spot#": 0, "reserve_status": False, "reserver_name": None},
-        {"floor#": 1, "spot#": 1, "reserve_status": False, "reserver_name": None},
-        {"floor#": 1, "spot#": 2, "reserve_status": False, "reserver_name": None},
-        {"floor#": 1, "spot#": 3, "reserve_status": False, "reserver_name": None},
-        {"floor#": 1, "spot#": 4, "reserve_status": False, "reserver_name": None},
-        {"floor#": 1, "spot#": 5, "reserve_status": False, "reserver_name": None},
-
-        {"floor#": 2, "spot#": 0, "reserve_status": False, "reserver_name": None},
-        {"floor#": 2, "spot#": 1, "reserve_status": True, "reserver_name": "user1"},
-        {"floor#": 2, "spot#": 2, "reserve_status": False, "reserver_name": None},
-        {"floor#": 2, "spot#": 3, "reserve_status": False, "reserver_name": None},
-        {"floor#": 2, "spot#": 4, "reserve_status": False, "reserver_name": None},
-        {"floor#": 2, "spot#": 5, "reserve_status": False, "reserver_name": None},
+        {"floor#": 2, "spot#": 0, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 2, "spot#": 1, "reserve_status": True, "reserver_name": "user1", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 2, "spot#": 2, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 2, "spot#": 3, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 2, "spot#": 4, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 2, "spot#": 5, "reserve_status": False, "reserver_name": None, "timestamp": None},
     ])
 
 
     ## use to test when parking spot is all resereved
     # parkingData_result = parkingData.insert_many( [
-    #     {"floor#": 0, "spot#": 0, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 0, "spot#": 1, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 0, "spot#": 2, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 0, "spot#": 3, "reserve_status": True, "reserver_name": "user2"},
-    #     {"floor#": 0, "spot#": 4, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 0, "spot#": 5, "reserve_status": True, "reserver_name": None},
+    #     {"floor#": 0, "spot#": 0, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 0, "spot#": 1, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 0, "spot#": 2, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 0, "spot#": 3, "reserve_status": True, "reserver_name": "user2", "timestamp": None},
+    #     {"floor#": 0, "spot#": 4, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 0, "spot#": 5, "reserve_status": True, "reserver_name": None, "timestamp": None},
 
-    #     {"floor#": 1, "spot#": 0, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 1, "spot#": 1, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 1, "spot#": 2, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 1, "spot#": 3, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 1, "spot#": 4, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 1, "spot#": 5, "reserve_status": True, "reserver_name": None},
+    #     {"floor#": 1, "spot#": 0, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 1, "spot#": 1, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 1, "spot#": 2, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 1, "spot#": 3, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 1, "spot#": 4, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 1, "spot#": 5, "reserve_status": True, "reserver_name": None, "timestamp": None},
 
-    #     {"floor#": 2, "spot#": 0, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 2, "spot#": 1, "reserve_status": True, "reserver_name": "user1"},
-    #     {"floor#": 2, "spot#": 2, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 2, "spot#": 3, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 2, "spot#": 4, "reserve_status": True, "reserver_name": None},
-    #     {"floor#": 2, "spot#": 5, "reserve_status": True, "reserver_name": None},
+    #     {"floor#": 2, "spot#": 0, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 2, "spot#": 1, "reserve_status": True, "reserver_name": "user1", "timestamp": None},
+    #     {"floor#": 2, "spot#": 2, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 2, "spot#": 3, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 2, "spot#": 4, "reserve_status": True, "reserver_name": None, "timestamp": None},
+    #     {"floor#": 2, "spot#": 5, "reserve_status": True, "reserver_name": None, "timestamp": None},
     # ])
 
 
@@ -599,28 +603,15 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, rows, cols):
                         if (parkingData_document["floor#"] == floor_input) and (parkingData_document["spot#"] == spot_input-1) and (parkingData_document["reserver_name"] == None):
 
                             for user_data_document in userData.find({}):
-                                if (logged_in_username == user_data_document["username"]) and (user_data_document["balance"] >= 10.0):                        
-                                    updated_balance = user_data_document["balance"] - 10.0
-                                    userData.update_one({"username": logged_in_username},
-                                        {"$set": {"balance": float(updated_balance)}})
+                                if (logged_in_username == user_data_document["username"]):                        
+                                    
                                     parkingData.update_one({"_id": parkingData_document["_id"]},
                                         {"$set": {"reserve_status": True}},)
                                     parkingData.update_one({"_id": parkingData_document["_id"]},
                                         {"$set": {"reserver_name": logged_in_username}},)
-                                    print ("--------------------------------------------")
-                                    print ("The selected parking Slot will cost $10.0...")
+                                    parkingData.update_one({"_id": parkingData_document["_id"]},
+                                        {"$set": {"timestamp": datetime.now()}},)
                                     break
-
-                                elif ((logged_in_username == user_data_document["username"]) and (user_data_document["balance"] < 10.0)):
-                                    print ("--------------------------------------------")
-                                    print ("Insufficent fund to reserve, please add more money to your balance")
-                                    print ("Redirecting...")
-                                    leave_reserveSpot = True
-                                    break
-                            if (leave_reserveSpot == True):
-                                return mat
-
-
                             print ("--------------------------------------------")
                             print ("Reserve successfully")
                             break
@@ -641,11 +632,6 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, rows, cols):
 
 
 
-                    for user_data_document in userData.find({}):
-                        if (logged_in_username == user_data_document["username"]):  
-                            print ("Your remaining balance is: $", user_data_document["balance"])
-                            print ("--------------------------------------------")
-                            break
 
                     showGarage(mat, rows,cols , parkingData)
                 else:
@@ -699,6 +685,7 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
             if(spot_input2 > cols or spot_input2 <1 ):
                 print("invalid spot number, please try again")
             else:
+                print ("--------------------------------------------")
                 print ("You selected parking Slot ", a[0].upper(), spot_input2 )
                 input2 = True
         
@@ -708,16 +695,42 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
 
     for parkingData_document in parkingData.find({}):
 
-        if (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] == logged_in_username):
+        if (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] == logged_in_username) and (parkingData_document["reserve_status"] == True):
+            for userData_document in userData.find({}):
+                if (userData_document["username"] == logged_in_username):
 
-            parkingData.update_one({"_id": parkingData_document["_id"]},
-                {"$set": {"reserve_status": False}},)
-            parkingData.update_one({"_id": parkingData_document["_id"]},
-                {"$set": {"reserver_name": None}},)
-            print ("--------------------------------------------")
-            print ("Unreserve successfully\n Redirecting...")
-            print ("--------------------------------------------")
-            break
+                    if (userData_document["balance"] >= parking_cost_calculator(parkingData_document["timestamp"])):
+                        
+                        parkingData.update_one({"_id": parkingData_document["_id"]},
+                            {"$set": {"reserve_status": False}},)
+                        parkingData.update_one({"_id": parkingData_document["_id"]},
+                            {"$set": {"reserver_name": None}},)
+                        
+                        
+                        userBalance = userData_document["balance"]
+                        parkingCost = parking_cost_calculator(parkingData_document["timestamp"])
+                        
+                        print ("Your parking cost : ", parkingCost )
+                        print ("Your current balance: ", userData_document["balance"])
+                        updated_balance = userBalance - parkingCost 
+                      
+                        userData.update_one({"_id": userData_document["_id"]},
+                                        {"$set": {"balance": updated_balance}})
+
+                        print ("--------------------------------------------")
+                        print ("Unreserve successfully")
+                        print ("Your remaining balance: ", updated_balance, "\n Redirecting...")
+                        print ("--------------------------------------------")
+                        break
+                    else: 
+                        print ("--------------------------------------------")
+                        print ("Insufficent fund to reserve, please add more money to your balance")
+                        print ("Payment for the parking spot: " , parking_cost_calculator(parkingData_document["timestamp"]) )
+                        print ("Your current balance: ", userData_document["balance"])
+                        print (" Redirecting...")
+                        print ("--------------------------------------------")
+                        break
+
 
         elif (parkingData_document["floor#"] == floor_name) and (parkingData_document["spot#"] == spot_input2-1) and (parkingData_document["reserver_name"] != logged_in_username) and (parkingData_document["reserve_status"] == True) and (parkingData_document["reserver_name"] != None):
             print ("--------------------------------------------")
@@ -730,5 +743,18 @@ def leavingLot(mat, parkingData, logged_in_username, userData, cols):
             print ("You cannot leave reserve a spot that has not been reserved by anyone! \n Redirecting... ")
             print ("--------------------------------------------")
             break
+
+def parking_cost_calculator (start_time):
+
+    elapsed_time_in_seconds = (datetime.now() - start_time).total_seconds()
+    elapsed_time_hours = elapsed_time_in_seconds/3600
+    if (elapsed_time_hours <= 12):
+        return 10.0
+    
+    elif (elapsed_time_hours > 12) and (elapsed_time_hours < 24):
+        return 15.0
+    
+    else: 
+        return 20.0
 
 main()

@@ -20,7 +20,7 @@ import time
 
 
 
-INACTIVITY_DURATION = 5
+
 #main function
 def main():
 
@@ -191,7 +191,7 @@ def main():
 
                         if last_active_time - current_time > inactivity_time:
                             print ("--------------------------------------------")    
-                            print("User is inactive. Ending program...")
+                            print("User is inactive.")
                             leave_parking_garage = True
                             my_parking_garage_choice=9
                         # Check if the user has been inactive for more than the time limit

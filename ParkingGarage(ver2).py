@@ -191,7 +191,7 @@ def main():
                             print ("--------------------------------------------")    
                             print("User is inactive. Ending program...")
                             leave_parking_garage = True
-                            break
+                            my_parking_garage_choice=9
                         # Check if the user has been inactive for more than the time limit
 
                         if (my_parking_garage_choice < 1) or (my_parking_garage_choice > 10):

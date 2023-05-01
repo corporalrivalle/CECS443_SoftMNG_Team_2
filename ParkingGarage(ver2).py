@@ -1,3 +1,5 @@
+#this is the current implementation of the program as of 4/30/2023
+
 #imports
 import getpass
 from datetime import datetime
@@ -323,7 +325,6 @@ def main():
                                 delete_input = input("Are you sure you want to delete this account? Y/N: ")
                                 exit_delete_account = False
                                 while 1:
-
                                     if (delete_input == "y") or (delete_input == "Y"):
                                         #delete account
                                         for userData_document in userData.find({}):

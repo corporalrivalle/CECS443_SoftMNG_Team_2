@@ -1,1 +1,22 @@
-<p>signup works!</p>
+<div>
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" novalidate>
+        <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+            <mat-hint>Enter your email</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+            <mat-hint>Enter a username.</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password">
+            <mat-hint>Enter a password</mat-hint>
+        </mat-form-field>
+        <div> <!--Block 3 for submit button-->
+            <button mat-flat-button color="primary" type="submit" onclick="onSubmit();" [disabled]="!signUpForm.valid">Submit</button>
+        </div>
+    </form>
+</div>

@@ -75,5 +75,10 @@ This collections stores users account information
 - Car_plate: stores the car plate registered with the account
 
 
+# GitHub Link:
+
+https://github.com/corporalrivalle/CECS443_SoftMNG_Team_2
+
+
 
 

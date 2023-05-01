@@ -1,11 +1,10 @@
 # CECS443_SoftMNG_Team_2
 
-ParkingGarage.py is the main file written by Johnnie Mares 
+ParkingGarage.py is the first implementation file written by Johnnie Mares 
 
-ParkingGarageMain.py is the refactored file written by Derek Zhang
- - Updated sections for this segment can be found in the branch "main-refactor" 
+ParkingGarageMain.py is the refactored main file written by Derek Zhang
 
-ParkingGarage(ver2).py and Utilities.py are the files written by Dat Pham
+ParkingGarage(ver2).py and Utilities.py are the current working files written by Dat Pham and contributed to by Derek and Johnnie
 
  - ParkingGarage(ver2).py is the whole program.
  - need to run "pip install pymongo" in the terminal to download pymongo
@@ -14,7 +13,7 @@ ParkingGarage(ver2).py and Utilities.py are the files written by Dat Pham
  - from datetime import datetime
     - usd to implement all the time related features of the product.
  - from pprint import pprint
-    - allowws us to print and display arbitrary data that would usable be "ugly" into a more human readable form
+    - allows us to print and display arbitrary data that would usable be "ugly" into a more human readable form
  - import pymongo
     - used to connect to our systems mongo database
  - from Utilities import Utilities

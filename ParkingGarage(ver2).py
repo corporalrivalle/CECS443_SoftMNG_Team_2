@@ -12,13 +12,14 @@ from  termcolor import colored
 import re
 import pyfiglet
 from datetime import datetime
+import keyboard
+import time
 
 
 
 
 
-
-
+INACTIVITY_DURATION = 5
 #main function
 def main():
 
@@ -160,11 +161,41 @@ def main():
             #  This is where we can put our parking garage functionalities (reserve, unreserve, add balance, etc) 
 
             if (leave_parking_garage == False) & (leave_login == True):
+                # Set the time limit for inactivity (in seconds)
+                inactivity_time = 5
 
+                # Get the current time
+                current_time = time.time()
+
+                # Get the time when the user was last active
+                last_active_time = time.time()
                 while 1:
-                    try:
+                    try:    
+                        # Get the current time
+                        current_time = time.time()
+
+
+
+                        # Wait for 1 second before checking again
+                        # time.sleep(0)
+
                         print_parking_garage_menu(logged_in_username)    
                         my_parking_garage_choice = int(input())
+
+
+                        #check for user input
+                        if my_parking_garage_choice: 
+                            # If the user has entered input, update the last active time
+                            last_active_time = time.time()
+
+
+                        if last_active_time - current_time > inactivity_time:
+                            print ("--------------------------------------------")    
+                            print("User is inactive. Ending program...")
+                            leave_parking_garage = True
+                            break
+                        # Check if the user has been inactive for more than the time limit
+
                         if (my_parking_garage_choice < 1) or (my_parking_garage_choice > 10):
                             print ("--------------------------------------------")
                             print("Not a valid entry, try again")
@@ -790,4 +821,23 @@ def parking_cost_calculator (start_time):
     else: 
         return 20.0
 
+def check_user_activity():
+    # get the current time
+    current_time = time.time()
+
+    # set the inactivity threshold
+    inactivity_threshold = current_time + INACTIVITY_DURATION
+
+    while True:
+        # check if the current time has exceeded the inactivity threshold
+        if time.time() > inactivity_threshold:
+            print("User is inactive.")
+            # reset the inactivity threshold
+            inactivity_threshold = time.time() + INACTIVITY_DURATION
+
+        # check for keyboard events
+        event = keyboard.read_event()
+        if event.event_type == "down":
+            # a key has been pressed, update the current time
+            current_time = time.time()
 main()

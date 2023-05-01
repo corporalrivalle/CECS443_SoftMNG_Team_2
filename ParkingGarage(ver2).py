@@ -12,7 +12,6 @@ from  termcolor import colored
 import re
 import pyfiglet
 from datetime import datetime
-import keyboard
 import time
 
 
@@ -162,7 +161,7 @@ def main():
 
             if (leave_parking_garage == False) & (leave_login == True):
                 # Set the time limit for inactivity (in seconds)
-                inactivity_time = 5
+                inactivity_time = 300 # 5 mins
 
                 # Get the current time
                 current_time = time.time()
@@ -173,7 +172,6 @@ def main():
                     try:    
                         # Get the current time
                         current_time = time.time()
-
 
 
                         # Wait for 1 second before checking again
@@ -821,23 +819,4 @@ def parking_cost_calculator (start_time):
     else: 
         return 20.0
 
-def check_user_activity():
-    # get the current time
-    current_time = time.time()
-
-    # set the inactivity threshold
-    inactivity_threshold = current_time + INACTIVITY_DURATION
-
-    while True:
-        # check if the current time has exceeded the inactivity threshold
-        if time.time() > inactivity_threshold:
-            print("User is inactive.")
-            # reset the inactivity threshold
-            inactivity_threshold = time.time() + INACTIVITY_DURATION
-
-        # check for keyboard events
-        event = keyboard.read_event()
-        if event.event_type == "down":
-            # a key has been pressed, update the current time
-            current_time = time.time()
 main()

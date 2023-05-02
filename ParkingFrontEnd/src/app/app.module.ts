@@ -27,13 +27,15 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { appRoutes } from './app.routes';
 import { RouterModule } from '@angular/router';
+import { UserprofileComponent } from './userprofile/userprofile.component';
 @NgModule({
   declarations: [
     AppComponent,
     ViewLotsComponent,
     LoginComponent,
     SignupComponent,
-    HomepageComponent
+    HomepageComponent,
+    UserprofileComponent
   ],
   imports: [
     BrowserModule,

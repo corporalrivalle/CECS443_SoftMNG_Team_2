@@ -12,4 +12,12 @@ export class HTTPServiceService {
   createUser(user:Object):Observable<Object>{
     return this.http.post(`${this.baseUrl}`,user)
   }
+
+  deleteUser(_id:string):Observable<Object>{
+    return this.http.delete(`${this.baseUrl}/${_id}`,{responseType:'text'})
+  }
+
+  getUserList(): Observable<any> {
+    return this.http.get(`${this.baseUrl}`);
+  }
 }

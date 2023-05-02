@@ -24,6 +24,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule} from '@angular/material/snack-bar'
 
 import { appRoutes } from './app.routes';
 import { RouterModule } from '@angular/router';
@@ -46,7 +47,8 @@ import { UserprofileComponent } from './userprofile/userprofile.component';
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    MatSnackBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

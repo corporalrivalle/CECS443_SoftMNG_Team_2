@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import { user } from '../user';
 import {map, tap, reduce} from 'rxjs/operators';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
 
 @Component({
   selector: 'app-userprofile',

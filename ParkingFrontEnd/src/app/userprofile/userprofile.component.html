@@ -6,15 +6,15 @@
 
 
 
-<div>
-    <table mat-table (load)="onReload()">
+<div style="justify-content: center; align-content: center; padding:10%">
+    <table mat-table (load)="onReload()" class="mat-elevation-z8" matSort>
         <thead>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Balance</th>
-            <th>Car Plate</th>
+            <th mat-sort-header>ID</th>
+            <th mat-sort-header>Username</th>
+            <th mat-sort-header>Email</th>
+            <th mat-sort-header>Password</th>
+            <th mat-sort-header>Balance</th>
+            <th mat-sort-header>Car Plate</th>
         </thead>
         <tbody>
             <tr *ngFor="let user of userList">

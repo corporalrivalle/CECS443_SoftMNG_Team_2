@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup} from '@angular/forms'
 import { HTTPServiceService } from '../httpservice.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-signup',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class SignupComponent {
   signUpForm;
-  constructor(private formBuilder: FormBuilder, private httpService:HTTPServiceService, private router:Router){
+  constructor(private formBuilder: FormBuilder, private httpService:HTTPServiceService, private router:Router, private _snackBar: MatSnackBar){
     this.signUpForm = this.formBuilder.group({
       email:['',[Validators.required,Validators.email]],
       username:['',[Validators.required]],
@@ -37,6 +38,9 @@ export class SignupComponent {
       error => console.log(error)
     )
     this.signUpForm.reset()
+    this._snackBar.open('User registered successfully!','Close');
+
+
   }
 
 }

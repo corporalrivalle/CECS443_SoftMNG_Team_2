@@ -25,21 +25,16 @@ def main():
     client = MongoClient(config['uri'])
     db = client['ParkingGarage']
     #Creating a schema
-    userCredentials = db.userCredentials
-    # Creating attributes for userCredentials schema
-    userCredentials.create_index([("username", pymongo.ASCENDING)], unique=True)
-    userCredentials.create_index([("password", pymongo.ASCENDING)])
-    userCredentials.create_index([("email", pymongo.ASCENDING)], unique = True)
 
 
     #Creating a schema
     userData = db.userData
     # Creating attributes for userCredentials schema
-    # userData.create_index([("username", pymongo.ASCENDING)], unique=True)
-    # userData.create_index([("password", pymongo.ASCENDING)])
-    # userData.create_index([("email", pymongo.ASCENDING)], unique = True)
-    # userData.create_index([("balance", pymongo.ASCENDING)])
-    # userData.create_index([("car_plate", pymongo.ASCENDING)])
+    userData.create_index([("username", pymongo.ASCENDING)], unique=True)
+    userData.create_index([("password", pymongo.ASCENDING)])
+    userData.create_index([("email", pymongo.ASCENDING)], unique = True)
+    userData.create_index([("balance", pymongo.ASCENDING)])
+    userData.create_index([("car_plate", pymongo.ASCENDING)])
  
     #Creating a schema
     parkingData = db.parkingData
@@ -85,7 +80,7 @@ def main():
                         password_input = input("password: ")
 
                         # going through each userCredential in mongoDB to try to find a match
-                        for userCredentials_document in userCredentials.find({}):
+                        for userCredentials_document in userData.find({}):
                             if ((userCredentials_document["username"] == str(username_input)) & 
                                 (userCredentials_document["password"] == str(password_input))):
                                 credentials_validator = True
@@ -120,7 +115,7 @@ def main():
 
                         username_validator = False
                         email_validator = False
-                        for userCredentials_document in userCredentials.find({}):
+                        for userCredentials_document in userData.find({}):
                             # look for any existing username or email in the database
                             if ((userCredentials_document["username"] == str(username_input))):
                                 username_validator = True
@@ -133,7 +128,7 @@ def main():
                         if (email_validator == True):
                             print ("email has been used! Failed to signup!")
                         if (username_validator == False & email_validator == False):
-                            userCredentials.insert_one({"username": username_input, "password": password_input, "email": email_input})
+                            # userCredentials.insert_one({"username": username_input, "password": password_input, "email": email_input})
                             userData.insert_one( {"username": username_input, "password": password_input, "email": email_input, "balance": 0, "car_plate": ""})
                             print ("sign up successfully!")
                     case 3:
@@ -142,9 +137,9 @@ def main():
                         leave_parking_garage = True
                     case 4:    
                         #used to populate some data. 
-                        populate(db, userCredentials, userData, parkingData)
+                        populate(db, userData, parkingData)
                     case 5:
-                        delete_existing_data(db, userCredentials, userData, parkingData)
+                        delete_existing_data(db, userData, parkingData)
                     
 
                 # if leave_login == True:
@@ -328,7 +323,7 @@ def main():
                                         for userData_document in userData.find({}):
                                             if (userData_document["username"] == logged_in_username):
                                                 db.userData.delete_one({"username": userData_document["username"]})
-                                                db.userCredentials.delete_one({"username": userData_document["username"]})
+                                                # db.userCredentials.delete_one({"username": userData_document["username"]})
                                                 print ("--------------------------------------------")
                                                 print ("Deletion successfully!")
                                                 exit_delete_account = True
@@ -368,10 +363,6 @@ def main():
                                             new_pass_input = input("Please enter your new password: ")
                                             userData.update_one({"username": logged_in_username},
                                                             {"$set": {"password": new_pass_input}})
-                                            for userCredentials_document in userCredentials.find({}):
-                                                userCredentials.update_one({"username": logged_in_username},
-                                                            {"$set": {"password": new_pass_input}})
-                                                break
                                             print ("Password changed")
                                             exit_pass_change = True
                                             print ("--------------------------------------------")
@@ -445,15 +436,15 @@ def print_parking_garage_menu(logged_in_username):
 
 
 
-def populate (db, userCredentials, userData, parkingData):
+def populate (db, userData, parkingData):
 
     # inserting default data for user
-    userCredentials_result = userCredentials.insert_many([
-        {"username": "user1", "password": "passw1", "email": "user.01@gmail.com"},
-        {"username": "user2", "password": "passw2", "email": "user.02@gmail.com"},
-        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com"},
+    # userCredentials_result = userCredentials.insert_many([
+    #     {"username": "user1", "password": "passw1", "email": "user.01@gmail.com"},
+    #     {"username": "user2", "password": "passw2", "email": "user.02@gmail.com"},
+    #     {"username": "user3", "password": "passw3", "email": "user.03@gmail.com"},
 
-    ])
+    # ])
 
     userData_result = userData.insert_many( [
         {"username": "user1", "password": "passw1", "email": "user.01@gmail.com", "balance": 10.0, "car_plate": "5EGC547"},
@@ -513,9 +504,8 @@ def populate (db, userCredentials, userData, parkingData):
     print ("--------------------------------------------")
     print ("Populate successfully")
 
-def delete_existing_data(db, userCredentials, userData, parkingData):
+def delete_existing_data(db, userData, parkingData):
     # Clear all currently existing data in all table
-    userCredentials.delete_many({})
     userData.delete_many({})
     parkingData.delete_many({})
     print ("--------------------------------------------")

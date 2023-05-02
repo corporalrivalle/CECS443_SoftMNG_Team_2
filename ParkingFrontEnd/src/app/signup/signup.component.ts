@@ -36,6 +36,7 @@ export class SignupComponent {
       },
       error => console.log(error)
     )
+    this.signUpForm.reset()
   }
 
 }

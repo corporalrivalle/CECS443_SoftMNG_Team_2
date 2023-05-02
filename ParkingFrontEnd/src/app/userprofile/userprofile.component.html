@@ -1,6 +1,13 @@
+<!-- <ng-container *ngFor="let user of userdictionary | keyvalue">
+    Key: <b>{{user.key}}</b> Value <b>{{user.value}}</b>
+</ng-container>
+
+<button mat-flat-button (click)="onReload()">Reload</button> -->
+
+
+
 <div>
-    <table mat-table (click)="onReload()">
-        <button mat-flat-button>Reload</button>
+    <table mat-table (load)="onReload()">
         <thead>
             <th>ID</th>
             <th>Username</th>
@@ -11,13 +18,15 @@
         </thead>
         <tbody>
             <tr *ngFor="let user of userList">
-                <td>{{user['_id']}}</td>
-                <td>{{user['username']}}</td>
-                <td>{{user['email']}}</td>
-                <td>{{user['password']}}</td>
-                <td>{{user['balance']}}</td>
-                <td>{{user['car_plate']}}</td>
+                <td>{{user.id}}</td>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.password}}</td>
+                <td>{{user.balance}}</td>
+                <td>{{user.car_plate}}</td>
             </tr>
         </tbody>
+        <button mat-flat-button (click)="onReload()">Reload</button>
     </table>
+    
 </div>

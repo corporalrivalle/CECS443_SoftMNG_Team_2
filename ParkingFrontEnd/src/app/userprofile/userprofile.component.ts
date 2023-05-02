@@ -3,6 +3,8 @@ import { HTTPServiceService } from '../httpservice.service';
 import { Router } from '@angular/router';
 import {Observable} from 'rxjs';
 import { user } from '../user';
+import {map, tap, reduce} from 'rxjs/operators';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'app-userprofile',
@@ -12,10 +14,12 @@ import { user } from '../user';
 export class UserprofileComponent {
   users: Observable<user[]>
   userList;
+  
   constructor(private httpService:HTTPServiceService, private router: Router){
 
   }
-
+  
+  dataSource = new MatTableDataSource();
 
   // onDelete(_id:string){
   //   this.httpService.deleteUser(_id).subscribe(
@@ -31,11 +35,10 @@ export class UserprofileComponent {
   // onUpdate(){
     
   // }
-
   onReload(){
     console.log("Reload triggered")
-    // this.userList = this.httpService.getUserList().subscribe(users => this.userList = users);
-    
+    this.httpService.getUserList().pipe(map(data => this.userList=data)).subscribe()
+    console.log(this.userList)
   }
 
 

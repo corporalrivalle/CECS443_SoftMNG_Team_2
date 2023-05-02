@@ -10,10 +10,10 @@ client = MongoClient(config['uri'])
 db = client['ParkingGarage']
 CORS(app, resources={r"*":{"origins":"*"}})
 
-@app.route('/')
-@cross_origin(origins="*")
-def index():
-    return render_template('ParkingFrontEnd\src\app\homepage\homepage.component.html')
+# @app.route('/')
+# @cross_origin(origins="*")
+# def index():
+#     return render_template('home.html')
 
 @app.route('/', methods=['POST','GET'])
 @cross_origin(origins="*")
@@ -44,6 +44,7 @@ def createUser():
         })
         return response
     if request.method=='GET':
+        print("Running getAllData")
         allData = db['userData'].find()
         dataJson=[]
         for data in allData:
@@ -62,8 +63,32 @@ def createUser():
         response = jsonify(dataJson)
         return response
 
-# @app.route('/user',methods=['PUT','GET','DELETE'])
-# @cross_origin(origins="*")
+@app.route('/user',methods=['PUT','GET','DELETE'])
+@cross_origin(origins="*")
+def getAllData():
+    if request.method=='GET':
+        print("Running getAllData")
+        allData = db['userData'].find()
+        dataJson=[]
+        for data in allData:
+            fetch_id = data['_id']
+            fetch_user = data['username']
+            fetch_pass = data['password']
+            fetch_email = data['email']
+            fetch_balance = data['balance']
+            fetch_car_plate = data['car_plate']
+            dataDict={
+                'id': str(fetch_id),
+                'username': fetch_user,
+                'password': fetch_pass,
+                'email':fetch_email,
+                'balance':fetch_balance,
+                'car_plate':fetch_car_plate
+            }
+            dataJson.append(dataDict)
+        print("CreateUser GET:",dataJson)
+        response = jsonify(dataJson)
+        return response
 
 
 

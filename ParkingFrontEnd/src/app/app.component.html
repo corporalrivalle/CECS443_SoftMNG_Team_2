@@ -1,1 +1,15 @@
-<router-outlet></router-outlet>
+<mat-drawer-container>
+    <mat-drawer mode="side" style="height: 100%; width: 15%;" opened>
+        <ul>
+            <a><h1>MENU</h1></a>
+            <li><a (click)="homeRedirect()">Home</a></li>
+            <li><a (click)="registerRedirect()">Register a User</a></li>
+            <li><a (click)="lotsRedirect()">View Lots</a></li>
+            <li><a (click)="userRedirect()">View Users</a></li>
+        </ul>
+    </mat-drawer>
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+        <footer style="justify-content: center; text-align: center;padding-top: 40%;">This is a CECS342 Spring 2023 Team 2 Production</footer>
+    </mat-drawer-content>
+</mat-drawer-container>

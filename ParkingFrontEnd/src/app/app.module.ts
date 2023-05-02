@@ -49,6 +49,7 @@ import { UserprofileComponent } from './userprofile/userprofile.component';
     ReactiveFormsModule,
     RouterModule.forRoot(appRoutes),
     MatSnackBarModule,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent]

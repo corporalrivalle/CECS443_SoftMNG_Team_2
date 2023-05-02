@@ -39,7 +39,7 @@ def createUser():
             "username":username,
             "password":password,
             "email":email,
-            "balance":0,
+            "balance":0.0,
             "car_plate":""
         })
         return response

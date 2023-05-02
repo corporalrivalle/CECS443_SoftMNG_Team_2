@@ -62,56 +62,9 @@ def createUser():
         response = jsonify(dataJson)
         return response
 
-@app.route('/user',method=['PUT','GET','DELETE'])
-@cross_origin(origins="*")
-def getUser(id):
-    if request.method=='GET':
-        data = db['userData'].find_one({'_id':ObjectId(id)})
-        fetch_username=data['username']
-        fetch_id=data['_id']
-        fetch_email=data['email']
-        fetch_balance = data['balance']
-        fetch_car_plate = data['car_plate']
-        fetch_password=data['password']
-        dataDict={
-            'id':str(fetch_id),
-            'username':fetch_username,
-            'email':fetch_email,
-            'balance':fetch_balance,
-            'car_plate':fetch_car_plate,
-            'password':fetch_password
-        }
-        print("GetUser GET:",dataDict)
-        response = jsonify(dataDict)
-        return response
-    if request.method == 'PUT':
-        body = request.json
-        username = body['username']
-        email = body['email']
-        password = body['password']
+# @app.route('/user',methods=['PUT','GET','DELETE'])
+# @cross_origin(origins="*")
 
-        db['userData'].update_one({
-            {'_id': ObjectId(id)},
-            {
-                "$set":{
-                    'username':username,
-                    'password':password,
-                    'email': email
-                }
-            }
-        })
-
-        print("Update Successful!")
-        response = jsonify({'status':'Data id: '+id+' is updated!'})
-        response.headers.add('Access-Control-Allow-Origin','*')
-        return response
-    
-    if request.method == "DELETE":
-        db['userData'].delete_many({'_id': ObjectId(id)})
-        print("Deletion successful!")
-        response = jsonify({'status': 'Data id: ' + id + ' is deleted!'})
-        response.headers.add('Access-Control-Allow-Origin','*')
-        return response
 
 
 if __name__ == '__main__':

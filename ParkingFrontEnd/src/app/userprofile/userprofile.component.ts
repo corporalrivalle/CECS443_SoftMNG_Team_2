@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HTTPServiceService } from '../httpservice.service';
-import { Router } from 'express';
+import { Router } from '@angular/router';
 import {Observable} from 'rxjs';
 import { user } from '../user';
 
@@ -11,27 +11,31 @@ import { user } from '../user';
 })
 export class UserprofileComponent {
   users: Observable<user[]>
+  userList;
   constructor(private httpService:HTTPServiceService, private router: Router){
 
   }
 
-  onDelete(_id:string){
-    this.httpService.deleteUser(_id).subscribe(
-      data=>{
-        console.log(data);
-        this.onReload();
-      },
-      error => console.log(error)
-    )
-    this.onReload();
-  }
 
-  onUpdate(){
+  // onDelete(_id:string){
+  //   this.httpService.deleteUser(_id).subscribe(
+  //     data=>{
+  //       console.log(data);
+  //       this.onReload();
+  //     },
+  //     error => console.log(error)
+  //   )
+  //   this.onReload();
+  // }
+
+  // onUpdate(){
     
-  }
+  // }
 
   onReload(){
-    this.users = this.httpService.getUserList();
+    console.log("Reload triggered")
+    // this.userList = this.httpService.getUserList().subscribe(users => this.userList = users);
+    
   }
 
 

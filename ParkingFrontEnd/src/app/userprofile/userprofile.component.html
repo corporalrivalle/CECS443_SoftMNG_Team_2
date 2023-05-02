@@ -1,1 +1,23 @@
-<p>userprofile works!</p>
+<div>
+    <table mat-table (click)="onReload()">
+        <button mat-flat-button>Reload</button>
+        <thead>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Balance</th>
+            <th>Car Plate</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of userList">
+                <td>{{user['_id']}}</td>
+                <td>{{user['username']}}</td>
+                <td>{{user['email']}}</td>
+                <td>{{user['password']}}</td>
+                <td>{{user['balance']}}</td>
+                <td>{{user['car_plate']}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { HTTPServiceService } from '../httpservice.service';
 import { Router } from '@angular/router';
-import {Observable} from 'rxjs';
-import { user } from '../user';
-import {map, tap, reduce} from 'rxjs/operators';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-userprofile',
@@ -13,15 +9,12 @@ import {MatPaginator} from '@angular/material/paginator';
   styleUrls: ['./userprofile.component.css']
 })
 export class UserprofileComponent {
-  users: Observable<user[]>
-  userList;
+    userList;
   
   constructor(private httpService:HTTPServiceService, private router: Router){
 
   }
   
-  dataSource = new MatTableDataSource();
-
   // onDelete(_id:string){
   //   this.httpService.deleteUser(_id).subscribe(
   //     data=>{

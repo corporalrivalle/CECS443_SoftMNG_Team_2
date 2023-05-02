@@ -1,1 +1,28 @@
-<p>view-lots works!</p>
+<style>
+    .highlight{
+        background-color: limegreen;
+    }
+</style>
+
+<div style="justify-content: center; align-content: center; padding-top:2%; padding-left: 5%;">
+    <h1>Parking Spaces    <button mat-flat-button color="primary" (click)="onReload()">Reload</button></h1> 
+    <table mat-table class="mat-elevation-z8" matSort>
+        <thead>
+            <th mat-sort-header>ID</th>
+            <th mat-sort-header>Floor/Spot</th>
+            <th mat-sort-header>Reserve Status</th>
+            <th mat-sort-header>Reserved By</th>
+            <th mat-sort-header>Timestamp</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let space of lotList" [ngClass]="{'highlight': space.reserve_status == true}">
+                <td>{{space.id}}</td>
+                <td>{{space.spot}}</td>
+                <td>{{space.reserve_status}}</td>
+                <td>{{space.reserver_name}}</td>
+                <td>{{space.timestamp}}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+</div>

@@ -69,6 +69,31 @@ def createUser():
         response = jsonify(dataJson)
         return response
 
+
+@app.route('/lot',methods=['POST','GET'])
+@cross_origin(origins='*')
+def lotData():
+    if request.method=='GET':
+        print("Running getLotData")
+        allData = db['parkingData'].find()
+        dataJson=[]
+        for data in allData:
+            fetch_id = data['_id']
+            fetch_floor = data['floor#']
+            fetch_spot = data['spot#']
+            fetch_reserve_status = data['reserve_status']
+            fetch_reserver_name = data['reserver_name']
+            fetch_timestamp = data['timestamp']
+            dataDict = {
+                "id":str(fetch_id),
+                "spot":str(fetch_floor)+"|"+str(fetch_spot),
+                "reserve_status":fetch_reserve_status,
+                "reserver_name":fetch_reserver_name,
+                "timestamp":fetch_timestamp
+            }
+            dataJson.append(dataDict)
+        response = jsonify(dataJson)
+        return response
 # @app.route('/user',methods=['PUT','GET','DELETE'])
 # @cross_origin(origins="*")
 # def getAllData():

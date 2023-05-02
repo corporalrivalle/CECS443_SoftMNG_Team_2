@@ -20,4 +20,8 @@ export class HTTPServiceService {
   getUserList(): Observable<any> {
     return this.http.get(`${this.baseUrl}`);
   }
+
+  getLotData(): Observable<any>{
+    return this.http.get(`${this.baseUrl}/lot`);
+  }
 }

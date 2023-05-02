@@ -6,8 +6,9 @@
 
 
 
-<div style="justify-content: center; align-content: center; padding:10%">
-    <table mat-table (load)="onReload()" class="mat-elevation-z8" matSort>
+<div style="justify-content: center; align-content: center; padding-top:2%; padding-left: 5%;">
+    <h1>User List    <button mat-flat-button color="primary" (click)="onReload()">Reload</button></h1> 
+    <table mat-table class="mat-elevation-z8" matSort>
         <thead>
             <th mat-sort-header>ID</th>
             <th mat-sort-header>Username</th>
@@ -26,7 +27,6 @@
                 <td>{{user.car_plate}}</td>
             </tr>
         </tbody>
-        <button mat-flat-button (click)="onReload()">Reload</button>
     </table>
     
 </div>

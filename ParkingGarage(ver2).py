@@ -7,7 +7,7 @@ from pprint import pprint
 
 import pymongo
 # from bson import DBRef
-# from pymongo import MongoClient
+from pymongo import MongoClient
 from pprint import pprint
 from Utilities import Utilities
 from  termcolor import colored
@@ -15,17 +15,15 @@ import re
 import pyfiglet
 from datetime import datetime
 import time
-
-
-
-
-
+import yaml
 
 #main function
 def main():
 
-    db = Utilities.startup()
-
+    # db = Utilities.startup()
+    config = yaml.safe_load(open('database.yaml'))
+    client = MongoClient(config['uri'])
+    db = client['ParkingGarage']
     #Creating a schema
     userCredentials = db.userCredentials
     # Creating attributes for userCredentials schema
@@ -37,11 +35,11 @@ def main():
     #Creating a schema
     userData = db.userData
     # Creating attributes for userCredentials schema
-    userData.create_index([("username", pymongo.ASCENDING)], unique=True)
-    userData.create_index([("password", pymongo.ASCENDING)])
-    userData.create_index([("email", pymongo.ASCENDING)], unique = True)
-    userData.create_index([("balance", pymongo.ASCENDING)])
-    userData.create_index([("car_plate", pymongo.ASCENDING)])
+    # userData.create_index([("username", pymongo.ASCENDING)], unique=True)
+    # userData.create_index([("password", pymongo.ASCENDING)])
+    # userData.create_index([("email", pymongo.ASCENDING)], unique = True)
+    # userData.create_index([("balance", pymongo.ASCENDING)])
+    # userData.create_index([("car_plate", pymongo.ASCENDING)])
  
     #Creating a schema
     parkingData = db.parkingData
@@ -136,7 +134,7 @@ def main():
                             print ("email has been used! Failed to signup!")
                         if (username_validator == False & email_validator == False):
                             userCredentials.insert_one({"username": username_input, "password": password_input, "email": email_input})
-                            userData.insert_one( {"username": username_input, "password": password_input, "email": email_input, "balance": 0.0, "car_plate": None})
+                            userData.insert_one( {"username": username_input, "password": password_input, "email": email_input, "balance": 0, "car_plate": ""})
                             print ("sign up successfully!")
                     case 3:
                         print ("Good bye!")
@@ -277,7 +275,7 @@ def main():
                                         for userData_document in userData.find({}):
                                             if (userData_document["username"] == logged_in_username):
                                                 userData.update_one({"username": logged_in_username},
-                                                            {"$set": {"car_plate": None}})
+                                                            {"$set": {"car_plate": ""}})
                                                 print ("--------------------------------------------")
                                                 print("Removing successfully")
                                                 leave_remove_registered_carplate = True
@@ -460,7 +458,7 @@ def populate (db, userCredentials, userData, parkingData):
     userData_result = userData.insert_many( [
         {"username": "user1", "password": "passw1", "email": "user.01@gmail.com", "balance": 10.0, "car_plate": "5EGC547"},
         {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": "4SDE258"},
-        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": None},
+        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": ""},
     ])
 
     parkingData_result = parkingData.insert_many( [
@@ -578,7 +576,7 @@ def reserveSpot(mat, parkingData, logged_in_username, userData, rows, cols):
 
             for userData_document in userData.find({}):
                 if (userData_document ["username"] == logged_in_username):
-                    if (userData_document["car_plate"] != None):
+                    if (userData_document["car_plate"] != None or userData_document["car_plate"]!=""):
                         showGarage(mat, rows,cols , parkingData)
                         
                         a =[]

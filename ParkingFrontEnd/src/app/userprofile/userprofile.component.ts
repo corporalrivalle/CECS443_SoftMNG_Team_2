@@ -39,7 +39,6 @@ export class UserprofileComponent {
   onReload(){
     console.log("Reload triggered")
     this.httpService.getUserList().pipe(map(data => this.userList=data)).subscribe()
-    console.log(this.userList)
   }
 
 

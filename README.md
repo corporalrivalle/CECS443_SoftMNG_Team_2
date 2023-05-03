@@ -1,19 +1,19 @@
 # CECS443_SoftMNG_Team_2
 
+# NOTE: PLEASE USE PYTHON 3.11.3!! Using earlier versions of python may result in errors!
+ - Front end is developed on Angular 15
 ParkingGarage.py is the first implementation file written by Johnnie Mares 
 
 ParkingGarageMain.py is the refactored main file written by Derek Zhang
 
 ParkingGarage(ver2).py and Utilities.py are the current working files written by Dat Pham and contributed to by Derek and Johnnie
+   - Run this file using a compiler for the terminal program.
 
 The ParkingFrontEnd segment is the front end of the web application that is integrated with the terminal program, written by Derek Zhang.
 
  - ParkingGarage(ver2).py is the whole terminal program.
  - need to run "pip install pymongo" in the terminal to download pymongo
  - see libraries below for all libraries needed (you can instal these with the command line "python -m pip install [library name]")
-
- # NOTE: PLEASE USE PYTHON 3.11.3!! Using earlier versions of python may result in errors!
- - Front end is developed on Angular 15
 
  # Libraries:
    # External Libraries used:

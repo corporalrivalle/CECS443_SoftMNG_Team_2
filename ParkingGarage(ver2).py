@@ -67,7 +67,7 @@ def main():
 
             try:
                 my_login_choice = int(input())
-                if (my_login_choice < 1) or (my_login_choice > 5):
+                if (my_login_choice < 1) or (my_login_choice > 6):
                     print ("--------------------------------------------")
                     print("Not a valid entry, try again")
 
@@ -140,7 +140,8 @@ def main():
                         populate(db, userData, parkingData)
                     case 5:
                         delete_existing_data(db, userData, parkingData)
-                    
+                    case 6:
+                        populate2(db, userData, parkingData)
 
                 # if leave_login == True:
                 #     break
@@ -414,6 +415,7 @@ def print_login_menu():
     print("3: Exit")
     print("4: populate some default data to the database (used for testing)")
     print("5: delete existing data in the database (used for testing)")
+    print("6: populate2 (used for full garage testing)")
 
 
 def print_parking_garage_menu(logged_in_username):
@@ -807,5 +809,52 @@ def parking_cost_calculator (start_time):
     
     else: 
         return 20.0
+
+
+def populate2 (db, userData, parkingData):
+
+    # inserting default data for user
+    userData_result = userData.insert_many( [
+        {"username": "user1", "password": "passw1", "email": "user.01@gmail.com", "balance": 10.0, "car_plate": "5EGC547"},
+        {"username": "user2", "password": "passw2", "email": "user.02@gmail.com", "balance": 100.0, "car_plate": "4SDE258"},
+        {"username": "user3", "password": "passw3", "email": "user.03@gmail.com", "balance": 50.25, "car_plate": "5DEF231"},
+        {"username": "user4", "password": "passw4", "email": "user.04@gmail.com", "balance": 10.0, "car_plate": "5FRG574"},
+        {"username": "user5", "password": "passw5", "email": "user.05@gmail.com", "balance": 100.0, "car_plate": "4MJH681"},
+        {"username": "user6", "password": "passw6", "email": "user.06@gmail.com", "balance": 50.25, "car_plate": "1DVF658"},
+        {"username": "user7", "password": "passw7", "email": "user.07@gmail.com", "balance": 10.0, "car_plate": "1HVA153"},
+        {"username": "user8", "password": "passw8", "email": "user.08@gmail.com", "balance": 100.0, "car_plate": "7ASC125"},
+        {"username": "user9", "password": "passw9", "email": "user.09@gmail.com", "balance": 50.25, "car_plate": "3CNH854"},
+        {"username": "user10", "password": "passw10", "email": "user.10@gmail.com", "balance": 10.0, "car_plate": "1POG123"},
+        {"username": "user11", "password": "passw11", "email": "user.11@gmail.com", "balance": 100.0, "car_plate": "2CAM258"},
+        {"username": "user12", "password": "passw12", "email": "user.12@gmail.com", "balance": 50.25, "car_plate": "5FDS147"},
+        {"username": "user13", "password": "passw13", "email": "user.13@gmail.com", "balance": 10.0, "car_plate": "9DFC123"},
+        {"username": "user14", "password": "passw14", "email": "user.14@gmail.com", "balance": 100.0, "car_plate": "6FDC210"},
+        {"username": "user15", "password": "passw15", "email": "user.15@gmail.com", "balance": 50.25, "car_plate": "2DES548"},
+        {"username": "user16", "password": "passw16", "email": "user.16@gmail.com", "balance": 10.0, "car_plate": "3FDA521"},
+        {"username": "user17", "password": "passw17", "email": "user.17@gmail.com", "balance": 50.25, "car_plate": "2MKI258"},
+        {"username": "user18", "password": "passw18", "email": "user.18@gmail.com", "balance": 10.0, "car_plate": "2MBC124"},
+    ])
+
+    parkingData_result = parkingData.insert_many( [
+        {"floor#": 0, "spot#": 0, "reserve_status": True, "reserver_name": "user1", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 0, "spot#": 1, "reserve_status": True, "reserver_name": "user2", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 0, "spot#": 2, "reserve_status": True, "reserver_name": "user3", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 0, "spot#": 3, "reserve_status": True, "reserver_name": "user4", "timestamp": datetime.strptime("2023-04-29 12:00:00", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 0, "spot#": 4, "reserve_status": True, "reserver_name": "user5", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 0, "spot#": 5, "reserve_status": True, "reserver_name": "user6", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 1, "spot#": 0, "reserve_status": True, "reserver_name": "user7", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 1, "spot#": 1, "reserve_status": True, "reserver_name": "user8", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 1, "spot#": 2, "reserve_status": True, "reserver_name": "user9", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 1, "spot#": 3, "reserve_status": True, "reserver_name": "user10", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 1, "spot#": 4, "reserve_status": True, "reserver_name": "user11", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 1, "spot#": 5, "reserve_status": True, "reserver_name": "user12", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 2, "spot#": 0, "reserve_status": True, "reserver_name": "user13", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 2, "spot#": 1, "reserve_status": True, "reserver_name": "user14", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 2, "spot#": 2, "reserve_status": True, "reserver_name": "user15", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 2, "spot#": 3, "reserve_status": False, "reserver_name": None, "timestamp": None},
+        {"floor#": 2, "spot#": 4, "reserve_status": True, "reserver_name": "user17", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+        {"floor#": 2, "spot#": 5, "reserve_status": True, "reserver_name": "user16", "timestamp": datetime.strptime("2023-04-15 13:27:10", "%Y-%m-%d %H:%M:%S")},
+    ])
+
 
 main()

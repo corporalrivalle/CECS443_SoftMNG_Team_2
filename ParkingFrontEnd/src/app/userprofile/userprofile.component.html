@@ -5,28 +5,33 @@
 <button mat-flat-button (click)="onReload()">Reload</button> -->
 
 
-
-<div style="justify-content: center; align-content: center; padding-top:2%; padding-left: 5%;">
-    <h1>User List    <button mat-flat-button color="primary" (click)="onReload()">Reload</button></h1> 
-    <table mat-table class="mat-elevation-z8" matSort>
-        <thead>
-            <th mat-sort-header>ID</th>
-            <th mat-sort-header>Username</th>
-            <th mat-sort-header>Email</th>
-            <!-- <th mat-sort-header>Password</th> -->
-            <th mat-sort-header>Balance</th>
-            <th mat-sort-header>Car Plate</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of userList">
-                <td>{{user.id}}</td>
-                <td>{{user.username}}</td>
-                <td>{{user.email}}</td>
-                <!-- <td>{{user.password}}</td> -->
-                <td>{{user.balance}}</td>
-                <td>{{user.car_plate}}</td>
-            </tr>
-        </tbody>
-    </table>
-    
+<div style="justify-content: center; display: flex;">
+    <h1><b>User List Table</b></h1>
+</div>
+<div style="justify-content: center; align-content: center; padding-top:2%; padding-left: 5%;display:flexbox">
+    <div>
+        <h1>User List      <button mat-flat-button color="primary" (click)="onReload()">Reload</button></h1>
+    </div>
+    <div>
+        <table mat-table class="mat-elevation-z8" matSort>
+            <thead>
+                <th mat-sort-header>ID</th>
+                <th mat-sort-header>Username</th>
+                <th mat-sort-header>Email</th>
+                <!-- <th mat-sort-header>Password</th> -->
+                <th mat-sort-header>Balance</th>
+                <th mat-sort-header>Car Plate</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of userList">
+                    <td>{{user.id}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.email}}</td>
+                    <!-- <td>{{user.password}}</td> -->
+                    <td>{{user.balance}}</td>
+                    <td>{{user.car_plate}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

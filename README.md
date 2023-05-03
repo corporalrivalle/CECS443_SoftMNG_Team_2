@@ -74,6 +74,10 @@ This collections stores users account information
 - Balance: stores the users balance/ wallet
 - Car_plate: stores the car plate registered with the account
 
+# Front End Information:
+- To run the front end application, server.py needs to be run in a command line interface for the backend.
+- using 'ng serve' in a command line interface while in the ParkingFrontEnd directory will run the front end application.
+- Both ends are needed for full functionality.
 
 # GitHub Link:
 

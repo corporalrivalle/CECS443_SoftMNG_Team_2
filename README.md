@@ -9,6 +9,9 @@ ParkingGarage(ver2).py and Utilities.py are the current working files written by
  - ParkingGarage(ver2).py is the whole program.
  - need to run "pip install pymongo" in the terminal to download pymongo
 
+ # NOTE: PLEASE USE PYTHON 3.11.3!! Using earlier versions of python may result in errors!
+ - Front end is developed on Angular 15
+
  # Libraries:
  - from datetime import datetime
     - usd to implement all the time related features of the product.
@@ -28,6 +31,10 @@ ParkingGarage(ver2).py and Utilities.py are the current working files written by
    - used to keep track of global time
 - yaml
    - used to implement yaml file being used in back end
+ - import flask 
+   - used for server management
+ - import flask_cors
+   - allows flask servers to establish and handle cross origin requests, which allow the backend and frontend servers to talk to each other. 
 
 # How it works/General Concept:
 

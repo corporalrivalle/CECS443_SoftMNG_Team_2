@@ -6,13 +6,32 @@ ParkingGarageMain.py is the refactored main file written by Derek Zhang
 
 ParkingGarage(ver2).py and Utilities.py are the current working files written by Dat Pham and contributed to by Derek and Johnnie
 
- - ParkingGarage(ver2).py is the whole program.
+The ParkingFrontEnd segment is the front end of the web application that is integrated with the terminal program, written by Derek Zhang.
+
+ - ParkingGarage(ver2).py is the whole terminal program.
  - need to run "pip install pymongo" in the terminal to download pymongo
+ - see libraries below for all libraries needed (you can instal these with the command line "python -m pip install [library name]")
 
  # NOTE: PLEASE USE PYTHON 3.11.3!! Using earlier versions of python may result in errors!
  - Front end is developed on Angular 15
 
  # Libraries:
+   # External Libraries used:
+   datetime
+   pprint
+   pymongo
+   termcolor
+   re
+   pyfiglet
+   time
+   pyyaml
+   flask
+   flask_cors
+
+   # Provided Libraries:
+   Utilities
+
+   # Library Descriptions and import statements
  - from datetime import datetime
     - usd to implement all the time related features of the product.
  - from pprint import pprint
@@ -29,11 +48,11 @@ ParkingGarage(ver2).py and Utilities.py are the current working files written by
     - used to make our amazing line art display
 - import time
    - used to keep track of global time
-- yaml
+- import pyyaml
    - used to implement yaml file being used in back end
  - import flask 
    - used for server management
- - import flask_cors
+ - from flask_cors import CORS, cross_origin
    - allows flask servers to establish and handle cross origin requests, which allow the backend and frontend servers to talk to each other. 
 
 # How it works/General Concept:
